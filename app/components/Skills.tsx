@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Code2, Smartphone, Database, Wrench } from "lucide-react";
 
 type Skill = {
@@ -16,49 +17,113 @@ type SkillGroup = {
   skills: Skill[];
 };
 
+const DEFAULT_SKILL_GROUPS: SkillGroup[] = [
+  {
+    title: "Web Development",
+    icon: <Code2 size={22} />,
+    color: "from-blue-500 to-cyan-500",
+    glowColor: "shadow-blue-500/20 dark:shadow-cyan-950/30",
+    skills: [
+      { name: "HTML/CSS", level: "Advanced", percentage: 85 },
+      { name: "JavaScript", level: "Advanced", percentage: 80 },
+      { name: "Next.js", level: "Intermediate", percentage: 70 },
+    ],
+  },
+  {
+    title: "Mobile Development",
+    icon: <Smartphone size={22} />,
+    color: "from-sky-400 to-indigo-500",
+    glowColor: "shadow-sky-500/20 dark:shadow-indigo-950/30",
+    skills: [
+      { name: "Flutter", level: "Advanced", percentage: 80 },
+    ],
+  },
+  {
+    title: "Database",
+    icon: <Database size={22} />,
+    color: "from-emerald-450 to-teal-500",
+    glowColor: "shadow-emerald-500/20 dark:shadow-teal-950/30",
+    skills: [
+      { name: "MySQL", level: "Intermediate", percentage: 75 },
+    ],
+  },
+  {
+    title: "Tools & Workflow",
+    icon: <Wrench size={22} />,
+    color: "from-amber-450 to-orange-500",
+    glowColor: "shadow-amber-500/20 dark:shadow-orange-950/30",
+    skills: [
+      { name: "Git / GitHub", level: "Advanced", percentage: 80 },
+      { name: "Figma", level: "Advanced", percentage: 80 },
+      { name: "AI Tools", level: "Advanced", percentage: 85 },
+    ],
+  },
+];
+
 export default function Skills() {
-  const skillGroups: SkillGroup[] = [
-    {
-      title: "Web Development",
-      icon: <Code2 size={22} />,
-      color: "from-blue-500 to-cyan-500",
-      glowColor: "shadow-blue-500/20 dark:shadow-cyan-950/30",
-      skills: [
-        { name: "HTML/CSS", level: "Advanced", percentage: 85 },
-        { name: "JavaScript", level: "Advanced", percentage: 80 },
-        { name: "Next.js", level: "Intermediate", percentage: 70 },
-      ],
-    },
-    {
-      title: "Mobile Development",
-      icon: <Smartphone size={22} />,
-      color: "from-sky-400 to-indigo-500",
-      glowColor: "shadow-sky-500/20 dark:shadow-indigo-950/30",
-      skills: [
-        { name: "Flutter", level: "Advanced", percentage: 80 },
-      ],
-    },
-    {
-      title: "Database",
-      icon: <Database size={22} />,
-      color: "from-emerald-450 to-teal-500",
-      glowColor: "shadow-emerald-500/20 dark:shadow-teal-950/30",
-      skills: [
-        { name: "MySQL", level: "Intermediate", percentage: 75 },
-      ],
-    },
-    {
-      title: "Tools & Workflow",
-      icon: <Wrench size={22} />,
-      color: "from-amber-450 to-orange-500",
-      glowColor: "shadow-amber-500/20 dark:shadow-orange-950/30",
-      skills: [
-        { name: "Git / GitHub", level: "Advanced", percentage: 80 },
-        { name: "Figma", level: "Advanced", percentage: 80 },
-        { name: "AI Tools", level: "Advanced", percentage: 85 },
-      ],
-    },
-  ];
+  const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(DEFAULT_SKILL_GROUPS);
+
+  useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    fetch(`${apiUrl}/skills`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const mapLevelText = (pct: number) => (pct >= 80 ? "Advanced" : pct >= 60 ? "Intermediate" : "Basic");
+          const categories: { [key: string]: Skill[] } = {
+            Web: [],
+            Mobile: [],
+            Database: [],
+            Tools: [],
+          };
+          data.forEach((s: any) => {
+            const cat = s.category || "Web";
+            if (!categories[cat]) categories[cat] = [];
+            categories[cat].push({
+              name: s.name,
+              level: mapLevelText(s.level || 70),
+              percentage: s.level || 70,
+            });
+          });
+
+          const updated: SkillGroup[] = [
+            {
+              title: "Web Development",
+              icon: <Code2 size={22} />,
+              color: "from-blue-500 to-cyan-500",
+              glowColor: "shadow-blue-500/20 dark:shadow-cyan-950/30",
+              skills: categories["Web"].length > 0 ? categories["Web"] : DEFAULT_SKILL_GROUPS[0].skills,
+            },
+            {
+              title: "Mobile Development",
+              icon: <Smartphone size={22} />,
+              color: "from-sky-400 to-indigo-500",
+              glowColor: "shadow-sky-500/20 dark:shadow-indigo-950/30",
+              skills: categories["Mobile"].length > 0 ? categories["Mobile"] : DEFAULT_SKILL_GROUPS[1].skills,
+            },
+            {
+              title: "Database",
+              icon: <Database size={22} />,
+              color: "from-emerald-450 to-teal-500",
+              glowColor: "shadow-emerald-500/20 dark:shadow-teal-950/30",
+              skills: categories["Database"].length > 0 ? categories["Database"] : DEFAULT_SKILL_GROUPS[2].skills,
+            },
+            {
+              title: "Tools & Workflow",
+              icon: <Wrench size={22} />,
+              color: "from-amber-450 to-orange-500",
+              glowColor: "shadow-amber-500/20 dark:shadow-orange-950/30",
+              skills: categories["Tools"].length > 0 ? categories["Tools"] : DEFAULT_SKILL_GROUPS[3].skills,
+            },
+          ];
+          setSkillGroups(updated);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section id="skills" className="py-20 relative overflow-hidden">

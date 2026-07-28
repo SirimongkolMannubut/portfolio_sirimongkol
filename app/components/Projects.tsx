@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { ExternalLink, MessageSquare, MapPin } from "lucide-react";
 
 // Custom SVG Icons for Brands
@@ -51,30 +52,69 @@ type Project = {
   icon: React.ReactNode;
   color: string;
   glowColor: string;
+  imageUrl?: string;
 };
 
+const DEFAULT_PROJECTS: Project[] = [
+  {
+    title: "LouisAI LINE Bot",
+    description: "พัฒนา LINE Bot โต้ตอบอัตโนมัติอัจฉริยะที่เชื่อมต่อเข้ากับ API ภายนอกเพื่อประมวลผลคำสั่งและช่วยเหลือผู้ใช้งานอย่างมีประสิทธิภาพ",
+    githubUrl: "https://github.com/SirimongkolMannubut/louis_line-bot",
+    tags: ["LINE API", "Node.js / Python", "API Integration", "AI Integration"],
+    icon: <MessageSquare size={26} />,
+    color: "from-green-550 to-emerald-500",
+    glowColor: "hover:shadow-green-500/10 dark:hover:shadow-emerald-950/20",
+  },
+  {
+    title: "GreenPoint",
+    description: "เว็บแอปพลิเคชันสำหรับแสดงแผนที่ ค้นหาตำแหน่ง และจัดการข้อมูลร้านค้าที่เป็นมิตรกับสิ่งแวดล้อม ช่วยผู้ใช้ค้นหาร้านค้าได้สะดวกขึ้น",
+    githubUrl: "https://github.com/ItzSakkarinTH/GreenPoint",
+    figmaUrl: "https://www.figma.com/design/n7MeR6y12E3TSJlikgy8FG/GREEN_POINT_FOR_EVER?node-id=1100-1367&t=DjY83an2h8plSZme-0",
+    tags: ["Next.js", "Tailwind CSS", "Map API", "Shop Management"],
+    icon: <MapPin size={26} />,
+    color: "from-blue-500 to-cyan-500",
+    glowColor: "hover:shadow-blue-550/10 dark:hover:shadow-cyan-950/20",
+  },
+];
+
 export default function Projects() {
-  const projects: Project[] = [
-    {
-      title: "LouisAI LINE Bot",
-      description: "พัฒนา LINE Bot โต้ตอบอัตโนมัติอัจฉริยะที่เชื่อมต่อเข้ากับ API ภายนอกเพื่อประมวลผลคำสั่งและช่วยเหลือผู้ใช้งานอย่างมีประสิทธิภาพ",
-      githubUrl: "https://github.com/SirimongkolMannubut/louis_line-bot",
-      tags: ["LINE API", "Node.js / Python", "API Integration", "AI Integration"],
-      icon: <MessageSquare size={26} />,
-      color: "from-green-550 to-emerald-500",
-      glowColor: "hover:shadow-green-500/10 dark:hover:shadow-emerald-950/20",
-    },
-    {
-      title: "GreenPoint",
-      description: "เว็บแอปพลิเคชันสำหรับแสดงแผนที่ ค้นหาตำแหน่ง และจัดการข้อมูลร้านค้าที่เป็นมิตรกับสิ่งแวดล้อม ช่วยผู้ใช้ค้นหาร้านค้าได้สะดวกขึ้น",
-      githubUrl: "https://github.com/ItzSakkarinTH/GreenPoint",
-      figmaUrl: "https://www.figma.com/design/n7MeR6y12E3TSJlikgy8FG/GREEN_POINT_FOR_EVER?node-id=1100-1367&t=DjY83an2h8plSZme-0",
-      tags: ["Next.js", "Tailwind CSS", "Map API", "Shop Management"],
-      icon: <MapPin size={26} />,
-      color: "from-blue-500 to-cyan-500",
-      glowColor: "hover:shadow-blue-550/10 dark:hover:shadow-cyan-950/20",
-    },
-  ];
+  const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
+
+  useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    fetch(`${apiUrl}/projects`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const colors = [
+            { color: "from-green-550 to-emerald-500", glowColor: "hover:shadow-green-500/10 dark:hover:shadow-emerald-950/20", icon: <MessageSquare size={26} /> },
+            { color: "from-blue-500 to-cyan-500", glowColor: "hover:shadow-blue-550/10 dark:hover:shadow-cyan-950/20", icon: <MapPin size={26} /> },
+            { color: "from-purple-500 to-indigo-500", glowColor: "hover:shadow-purple-550/10 dark:hover:shadow-indigo-950/20", icon: <MessageSquare size={26} /> },
+          ];
+          const mapped: Project[] = data.map((item: any, idx: number) => {
+            const style = colors[idx % colors.length];
+            return {
+              title: item.title,
+              description: item.description,
+              githubUrl: item.githubUrl || "https://github.com/SirimongkolMannubut",
+              figmaUrl: item.figmaUrl || undefined,
+              tags: item.techStack || ["Web"],
+              icon: style.icon,
+              color: style.color,
+              glowColor: style.glowColor,
+              imageUrl: item.imageUrl,
+            };
+          });
+          setProjects(mapped);
+        }
+      })
+      .catch(() => {
+        // Fallback to default static data on network error
+      });
+  }, []);
 
   return (
     <section id="projects" className="py-20 relative bg-zinc-550/5 dark:bg-zinc-950/20 overflow-hidden">

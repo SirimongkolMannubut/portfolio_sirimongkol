@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Phone, Mail, MessageCircle, Copy, Check, Send } from "lucide-react";
 
 // Custom SVG Icons for Brands
@@ -60,33 +60,71 @@ const FacebookIcon = ({ size = 20, className = "" }) => (
   </svg>
 );
 
+const DEFAULT_CONTACT = [
+  {
+    label: "เบอร์โทรศัพท์",
+    value: "065-590-3845",
+    href: "tel:0655903845",
+    icon: <Phone size={20} />,
+    color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-955/20 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30",
+  },
+  {
+    label: "อีเมล",
+    value: "topt75870@gmail.com",
+    href: "mailto:topt75870@gmail.com",
+    icon: <Mail size={20} />,
+    color: "bg-blue-50 text-blue-600 dark:bg-cyan-955/20 dark:text-cyan-400 border border-blue-105 dark:border-cyan-900/30",
+  },
+  {
+    label: "Line ID",
+    value: "6807ac.th",
+    href: "https://line.me/ti/p/~6807ac.th",
+    icon: <MessageCircle size={20} />,
+    color: "bg-green-50 text-green-600 dark:bg-green-955/20 dark:text-green-400 border border-green-100 dark:border-green-900/30",
+  },
+];
+
 export default function Contact() {
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [contactInfo, setContactInfo] = useState(DEFAULT_CONTACT);
 
-  const contactInfo = [
-    {
-      label: "เบอร์โทรศัพท์",
-      value: "065-590-3845",
-      href: "tel:0655903845",
-      icon: <Phone size={20} />,
-      color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-955/20 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30",
-    },
-    {
-      label: "อีเมล",
-      value: "topt75870@gmail.com",
-      href: "mailto:topt75870@gmail.com",
-      icon: <Mail size={20} />,
-      color: "bg-blue-50 text-blue-600 dark:bg-cyan-955/20 dark:text-cyan-400 border border-blue-105 dark:border-cyan-900/30",
-    },
-    {
-      label: "Line ID",
-      value: "6807ac.th",
-      href: "https://line.me/ti/p/~6807ac.th",
-      icon: <MessageCircle size={20} />,
-      color: "bg-green-50 text-green-600 dark:bg-green-955/20 dark:text-green-400 border border-green-100 dark:border-green-900/30",
-    },
-  ];
+  useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    fetch(`${apiUrl}/contact`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && (data.phone || data.email)) {
+          setContactInfo([
+            {
+              label: "เบอร์โทรศัพท์",
+              value: data.phone || "065-590-3845",
+              href: `tel:${(data.phone || "0655903845").replace(/[^0-9]/g, "")}`,
+              icon: <Phone size={20} />,
+              color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-955/20 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30",
+            },
+            {
+              label: "อีเมล",
+              value: data.email || "topt75870@gmail.com",
+              href: `mailto:${data.email || "topt75870@gmail.com"}`,
+              icon: <Mail size={20} />,
+              color: "bg-blue-50 text-blue-600 dark:bg-cyan-955/20 dark:text-cyan-400 border border-blue-105 dark:border-cyan-900/30",
+            },
+            {
+              label: "Line ID",
+              value: data.lineId || "6807ac.th",
+              href: `https://line.me/ti/p/~${data.lineId || "6807ac.th"}`,
+              icon: <MessageCircle size={20} />,
+              color: "bg-green-50 text-green-600 dark:bg-green-955/20 dark:text-green-400 border border-green-100 dark:border-green-900/30",
+            },
+          ]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);

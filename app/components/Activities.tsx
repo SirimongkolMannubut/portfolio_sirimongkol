@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Calendar, Award, Briefcase } from "lucide-react";
 
 type ActivityItem = {
@@ -11,33 +12,58 @@ type ActivityItem = {
   icon: React.ReactNode;
 };
 
+const DEFAULT_ACTIVITIES: ActivityItem[] = [
+  {
+    title: "นักศึกษาฝึกงาน - กยศ.",
+    subtitle: "กองทุนเงินให้กู้ยืมเพื่อการศึกษา",
+    date: "8 - 31 มิถุนายน 2569 (2026)",
+    type: "work",
+    icon: <Briefcase size={18} />,
+    details: [
+      "ตรวจสอบและจัดการเอกสารในระบบฐานข้อมูลและไฟล์เอกสารเพื่อความเป็นระเบียบ",
+      "สนับสนุนทีมงานในการทดสอบและพัฒนาเว็บไซต์และระบบงานภายในขององค์กร",
+      "จัดทำรายงานวิเคราะห์ข้อมูลการดำเนินงาน และนำเสนอผลงานต่อผู้บริหาร",
+    ],
+  },
+  {
+    title: "การพัฒนาเว็บไซต์ด้วย HTML, CSS และ JavaScript",
+    subtitle: "Google Developer Groups (GDG)",
+    date: "อบรมเชิงปฏิบัติการ",
+    type: "training",
+    icon: <Award size={18} />,
+    details: [
+      "ศึกษาและปฏิบัติจริงเกี่ยวกับการพัฒนาเว็บเบื้องต้นด้วย HTML5, CSS3 และ JavaScript",
+      "ทำความเข้าใจเกี่ยวกับการออกแบบ Responsive Web Design และ Responsive Layouts",
+      "เข้าร่วมกิจกรรม Networking และเรียนรู้ทักษะที่จำเป็นกับเหล่านักพัฒนาจาก GDG",
+    ],
+  },
+];
+
 export default function Activities() {
-  const items: ActivityItem[] = [
-    {
-      title: "นักศึกษาฝึกงาน - กยศ.",
-      subtitle: "กองทุนเงินให้กู้ยืมเพื่อการศึกษา",
-      date: "8 - 31 มิถุนายน 2569 (2026)",
-      type: "work",
-      icon: <Briefcase size={18} />,
-      details: [
-        "ตรวจสอบและจัดการเอกสารในระบบฐานข้อมูลและไฟล์เอกสารเพื่อความเป็นระเบียบ",
-        "สนับสนุนทีมงานในการทดสอบและพัฒนาเว็บไซต์และระบบงานภายในขององค์กร",
-        "จัดทำรายงานวิเคราะห์ข้อมูลการดำเนินงาน และนำเสนอผลงานต่อผู้บริหาร",
-      ],
-    },
-    {
-      title: "การพัฒนาเว็บไซต์ด้วย HTML, CSS และ JavaScript",
-      subtitle: "Google Developer Groups (GDG)",
-      date: "อบรมเชิงปฏิบัติการ",
-      type: "training",
-      icon: <Award size={18} />,
-      details: [
-        "ศึกษาและปฏิบัติจริงเกี่ยวกับการพัฒนาเว็บเบื้องต้นด้วย HTML5, CSS3 และ JavaScript",
-        "ทำความเข้าใจเกี่ยวกับการออกแบบ Responsive Web Design และ Responsive Layouts",
-        "เข้าร่วมกิจกรรม Networking และเรียนรู้ทักษะที่จำเป็นกับเหล่านักพัฒนาจาก GDG",
-      ],
-    },
-  ];
+  const [items, setItems] = useState<ActivityItem[]>(DEFAULT_ACTIVITIES);
+
+  useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    fetch(`${apiUrl}/activities`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped: ActivityItem[] = data.map((item: any) => ({
+            title: item.title,
+            subtitle: item.organization,
+            date: item.period,
+            type: item.type === "internship" || item.type === "work" ? "work" : "training",
+            icon: item.type === "internship" || item.type === "work" ? <Briefcase size={18} /> : <Award size={18} />,
+            details: item.description || [],
+          }));
+          setItems(mapped);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section id="activities" className="py-20 relative overflow-hidden">

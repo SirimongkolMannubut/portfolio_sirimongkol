@@ -43,6 +43,15 @@ export default function About() {
   const [imgError, setImgError] = useState(false);
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: "ศิริมงคล มนุบุตร",
+    title: "Computer Science Student · Developer",
+    bio: "นักศึกษาสาขาวิทยาการคอมพิวเตอร์ที่มุ่งมั่นในการพัฒนา Web Application และเทคโนโลยี AI มีประสบการณ์ในการพัฒนาระบบ Full-Stack ทั้งฝั่ง Front-end และ Back-end รวมถึงการออกแบบฐานข้อมูลและการประยุกต์ใช้ AI ในงานจริง พร้อมเปิดรับความรู้และความท้าทายใหม่ ๆ เพื่อพัฒนาศักยภาพในการเป็น Software Developer ในอนาคต",
+    university: "มหาวิทยาลัยราชภัฏศรีสะเกษ",
+    faculty: "วิทยาศาสตรบัณฑิต สาขาวิทยาการคอมพิวเตอร์",
+    gpa: 3.05,
+    profileImage: "",
+  });
 
   useEffect(() => {
     setIsMounted(true);
@@ -50,6 +59,27 @@ export default function About() {
     if (savedImage) {
       setCustomImage(savedImage);
     }
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    fetch(`${apiUrl}/profile`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.name) {
+          setProfileData({
+            name: data.name || "ศิริมงคล มนุบุตร",
+            title: data.title || "Computer Science Student · Developer",
+            bio: data.bio || "",
+            university: data.university || "มหาวิทยาลัยราชภัฏศรีสะเกษ",
+            faculty: data.faculty || "วิทยาศาสตรบัณฑิต สาขาวิทยาการคอมพิวเตอร์",
+            gpa: data.gpa || 3.05,
+            profileImage: data.profileImage || "",
+          });
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -157,8 +187,8 @@ export default function About() {
             )}
             
             <div className="mt-5 text-center flex flex-col items-center">
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">ศิริมงคล มนุบุตร</h3>
-              <p className="text-sm font-medium text-zinc-400 dark:text-cyan-400 mt-1 uppercase tracking-wider">Computer Science Student</p>
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">{profileData.name}</h3>
+              <p className="text-sm font-medium text-zinc-400 dark:text-cyan-400 mt-1 uppercase tracking-wider">{profileData.title}</p>
               
               {/* Quick social links under the title */}
               <div className="mt-5 flex flex-col gap-2.5 w-full max-w-[240px] text-left">
@@ -212,10 +242,7 @@ export default function About() {
                 ประวัติส่วนตัว
               </h4>
               <p className="text-zinc-650 dark:text-zinc-350 leading-relaxed text-sm sm:text-base font-medium">
-                นักศึกษาสาขาวิทยาการคอมพิวเตอร์ มีความสนใจและมุ่งมั่นในด้านการพัฒนาเว็บไซต์ 
-                เว็บแอปพลิเคชัน และเทคโนโลยี AI ผมมีประสบการณ์ในการพัฒนาโปรเจกต์จริง สามารถออกแบบ 
-                UI/UX และเชื่อมต่อฐานข้อมูลได้อย่างเหมาะสม พร้อมที่จะเรียนรู้เครื่องมือและเทคโนโลยีใหม่ๆ 
-                เพื่อนำมาพัฒนาขีดความสามารถอยู่เสมอ
+                {profileData.bio}
               </p>
             </div>
 
@@ -229,13 +256,13 @@ export default function About() {
                 <div>
                   <h4 className="font-bold text-zinc-900 dark:text-white mb-2">การศึกษา</h4>
                   <p className="text-sm font-bold text-zinc-850 dark:text-zinc-200">
-                    มหาวิทยาลัยราชภัฏศรีสะเกษ
+                    {profileData.university}
                   </p>
                   <p className="text-xs text-zinc-550 dark:text-zinc-400 mt-1 leading-relaxed">
-                    วิทยาศาสตรบัณฑิต สาขาวิทยาการคอมพิวเตอร์
+                    {profileData.faculty}
                   </p>
                   <div className="inline-flex items-center gap-1 mt-3 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-zinc-900 text-zinc-750 dark:text-zinc-300">
-                    GPA: 3.05
+                    GPA: {profileData.gpa}
                   </div>
                 </div>
               </div>
