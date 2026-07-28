@@ -41,8 +41,6 @@ const FacebookIcon = ({ size = 16, className = "" }) => (
 
 export default function About() {
   const [imgError, setImgError] = useState(false);
-  const [customImage, setCustomImage] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
   const [profileData, setProfileData] = useState({
     name: "ศิริมงคล มนุบุตร",
     title: "Computer Science Student · Developer",
@@ -54,12 +52,6 @@ export default function About() {
   });
 
   useEffect(() => {
-    setIsMounted(true);
-    const savedImage = localStorage.getItem("custom_profile_image");
-    if (savedImage) {
-      setCustomImage(savedImage);
-    }
-
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
     fetch(`${apiUrl}/profile`)
       .then((res) => {
@@ -81,31 +73,6 @@ export default function About() {
       })
       .catch(() => {});
   }, []);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("กรุณาเลือกรูปภาพที่มีขนาดไม่เกิน 2MB เพื่อรวดเร็วต่อการโหลดหน้าเว็บครับ");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setCustomImage(base64String);
-        localStorage.setItem("custom_profile_image", base64String);
-        setImgError(false);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleResetImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCustomImage(null);
-    localStorage.removeItem("custom_profile_image");
-    setImgError(false);
-  };
 
   const interests = [
     "AI",
@@ -130,61 +97,25 @@ export default function About() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
-          {/* Profile Photo / Avatar */}
+          {/* Profile Photo / Avatar (Read-Only from Backend API) */}
           <div className="flex flex-col items-center">
             <div
-              onClick={() => document.getElementById("profile-upload")?.click()}
-              className="relative w-64 h-64 rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-zinc-800 bg-gradient-to-tr from-blue-500 via-indigo-650 to-cyan-500 dark:from-cyan-500 dark:via-indigo-600 dark:to-violet-500 flex items-center justify-center group cursor-pointer"
+              className="relative w-64 h-64 rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-zinc-800 bg-gradient-to-tr from-blue-500 via-indigo-650 to-cyan-500 dark:from-cyan-500 dark:via-indigo-600 dark:to-violet-500 flex items-center justify-center"
             >
-              {/* Input file element (hidden) */}
-              <input
-                type="file"
-                id="profile-upload"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-
-              {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white z-20 gap-2 rounded-2xl">
-                <Camera size={26} className="animate-bounce" />
-                <span className="text-xs font-semibold">คลิกเพื่อเปลี่ยนรูป</span>
-              </div>
-
-              {isMounted && customImage ? (
+              {profileData.profileImage && !imgError ? (
                 <img
-                  src={customImage}
-                  alt="ศิริมงคล มนุบุตร"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              ) : (!imgError ? (
-                <img
-                  src="/profile.jpg"
-                  alt="ศิริมงคล มนุบุตร"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  src={profileData.profileImage}
+                  alt={profileData.name}
+                  className="w-full h-full object-cover"
                   onError={() => setImgError(true)}
                 />
               ) : (
                 <div className="text-center text-white p-6">
                   <div className="text-5xl font-black mb-2 tracking-wide">SM</div>
-                  <div className="text-xs opacity-75">ศิริมงคล มนุบุตร</div>
-                  <div className="text-[10px] mt-3 bg-white/20 px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    คลิกเพื่ออัพโหลดรูปภาพ
-                  </div>
+                  <div className="text-xs opacity-75">{profileData.name}</div>
                 </div>
-              ))}
+              )}
             </div>
-
-            {/* Reset Button (only shows when customImage exists) */}
-            {isMounted && customImage && (
-              <button
-                onClick={handleResetImage}
-                className="mt-3.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-100 dark:bg-rose-955/20 dark:text-rose-400 dark:border-rose-900/50 transition-colors cursor-pointer"
-              >
-                <Trash2 size={12} />
-                ลบรูปโปรไฟล์ที่อัพโหลด
-              </button>
-            )}
             
             <div className="mt-5 text-center flex flex-col items-center">
               <h3 className="text-xl font-bold text-zinc-900 dark:text-white">{profileData.name}</h3>
