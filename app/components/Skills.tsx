@@ -64,7 +64,7 @@ export default function Skills() {
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>(DEFAULT_SKILL_GROUPS);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-api-git-main-sirimongkolmannubuts-projects.vercel.app/api";
     fetch(`${apiUrl}/skills`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");

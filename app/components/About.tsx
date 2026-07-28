@@ -52,7 +52,7 @@ export default function About() {
   });
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-api-git-main-sirimongkolmannubuts-projects.vercel.app/api";
     fetch(`${apiUrl}/profile`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
