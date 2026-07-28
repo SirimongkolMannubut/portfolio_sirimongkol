@@ -43,7 +43,7 @@ export default function Activities() {
   const [items, setItems] = useState<ActivityItem[]>(DEFAULT_ACTIVITIES);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-api-git-main-sirimongkolmannubuts-projects.vercel.app/api";
+    const apiUrl = "/api";
     fetch(`${apiUrl}/activities`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");

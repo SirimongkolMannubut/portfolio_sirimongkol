@@ -90,7 +90,7 @@ export default function Contact() {
   const [contactInfo, setContactInfo] = useState(DEFAULT_CONTACT);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-api-git-main-sirimongkolmannubuts-projects.vercel.app/api";
+    const apiUrl = "/api";
     fetch(`${apiUrl}/contact`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");

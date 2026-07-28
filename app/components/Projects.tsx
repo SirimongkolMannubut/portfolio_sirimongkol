@@ -81,7 +81,7 @@ export default function Projects() {
   const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-api-git-main-sirimongkolmannubuts-projects.vercel.app/api";
+    const apiUrl = "/api";
     fetch(`${apiUrl}/projects`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
