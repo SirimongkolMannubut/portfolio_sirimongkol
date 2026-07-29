@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Portfolio website of Sirimongkol Manubut - Web Developer, Flutter Developer, and UI/UX Designer.",
 };
 
+import { LanguageProvider } from "./context/LanguageContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +29,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

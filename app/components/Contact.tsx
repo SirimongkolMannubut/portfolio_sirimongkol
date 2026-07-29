@@ -84,7 +84,10 @@ const DEFAULT_CONTACT = [
   },
 ];
 
+import { useLanguage } from "../context/LanguageContext";
+
 export default function Contact() {
+  const { t } = useLanguage();
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [contactInfo, setContactInfo] = useState(DEFAULT_CONTACT);
@@ -158,7 +161,7 @@ export default function Contact() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
-            ติดต่อฉัน (Contact)
+            {t("contact_title")}
           </h2>
           <div className="h-1 w-20 bg-blue-600 dark:bg-cyan-500 mx-auto mt-4 rounded-full shadow-[0_0_8px_var(--neon-cyan)]" />
         </div>

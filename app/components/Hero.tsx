@@ -60,7 +60,10 @@ const FacebookIcon = ({ size = 20, className = "" }) => (
   </svg>
 );
 
+import { useLanguage } from "../context/LanguageContext";
+
 export default function Hero() {
+  const { t } = useLanguage();
   const [terminalText, setTerminalText] = useState<string[]>([]);
   const [activeLine, setActiveLine] = useState(0);
 
@@ -120,18 +123,18 @@ export default function Hero() {
           </span>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-none">
-            <span className="block text-zinc-900 dark:text-white mb-2">สวัสดีครับ, ผม</span>
+            <span className="block text-zinc-900 dark:text-white mb-2">{t("hero_greeting")}</span>
             <span className="block bg-gradient-to-r from-blue-605 via-cyan-600 to-indigo-600 dark:from-cyan-400 dark:via-blue-400 dark:to-violet-400 bg-clip-text text-transparent pb-2 filter drop-shadow-sm font-black">
-              ศิริมงคล มนุบุตร
+              {t("hero_name")}
             </span>
           </h1>
 
           <p className="text-lg sm:text-xl font-bold tracking-wide text-zinc-700 dark:text-zinc-350">
-            Web Developer • Flutter Developer • UI/UX Designer
+            {t("hero_role")}
           </p>
 
           <p className="text-sm sm:text-base text-zinc-550 dark:text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-            นักศึกษาสาขาวิทยาการคอมพิวเตอร์ที่มุ่งเน้นความเชี่ยวชาญในการออกแบบและพัฒนาเว็บไซต์ เว็บแอปพลิเคชัน และระบบ AI เพื่อขับเคลื่อนประสบการณ์ใช้งานแห่งอนาคต
+            {t("hero_subtitle")}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -139,23 +142,21 @@ export default function Hero() {
               onClick={() => handleScroll("#projects")}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6.5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 dark:bg-cyan-600 dark:hover:bg-cyan-500 text-white font-semibold shadow-lg shadow-blue-550/20 dark:shadow-cyan-950/30 transition-all duration-300 cursor-pointer active:scale-95 group"
             >
-              ดูโปรเจกต์ผลงาน
+              {t("hero_btn_projects")}
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6.5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50 dark:bg-zinc-950 dark:border-zinc-800 dark:hover:bg-zinc-900 text-zinc-755 dark:text-zinc-300 font-semibold transition-all duration-300 cursor-pointer active:scale-95"
-            >
-              ดาวน์โหลด CV
-            </a>
             <button
               onClick={() => handleScroll("#contact")}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6.5 py-3 rounded-2xl bg-zinc-100/80 hover:bg-zinc-200/80 dark:bg-zinc-900/60 dark:hover:bg-zinc-800/85 text-zinc-700 dark:text-zinc-300 font-semibold transition-all duration-300 cursor-pointer active:scale-95"
             >
-              ติดต่อฉัน
+              {t("hero_btn_contact")}
             </button>
+            <a
+              href="/admin"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6.5 py-3 rounded-2xl bg-gradient-to-r from-blue-600/10 to-indigo-600/10 dark:from-cyan-500/10 dark:to-violet-500/10 border border-blue-500/30 dark:border-cyan-500/30 text-blue-600 dark:text-cyan-400 font-semibold transition-all duration-300 cursor-pointer active:scale-95"
+            >
+              🔐 Admin CMS
+            </a>
           </div>
 
           <div className="flex justify-center lg:justify-start items-center gap-5 pt-2 text-zinc-450 dark:text-zinc-500">

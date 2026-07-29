@@ -3,19 +3,22 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
-
-const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Activities", href: "#activities" },
-  { label: "Contact", href: "#contact" },
-];
+import LanguageSelector from "./LanguageSelector";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Header() {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const navItems = [
+    { label: t("nav_home"), href: "#home" },
+    { label: t("nav_about"), href: "#about" },
+    { label: t("nav_skills"), href: "#skills" },
+    { label: t("nav_projects"), href: "#projects" },
+    { label: t("nav_activities"), href: "#activities" },
+    { label: t("nav_contact"), href: "#contact" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,7 +37,7 @@ export default function Header() {
     setIsOpen(false);
     const element = document.querySelector(href);
     if (element) {
-      const offset = 80; // Offset for header height
+      const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -69,7 +72,7 @@ export default function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-5">
             {navItems.map((item) => (
               <a
                 key={item.label}
@@ -81,11 +84,13 @@ export default function Header() {
               </a>
             ))}
             <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
+            <LanguageSelector />
             <ThemeToggle />
           </nav>
 
           {/* Mobile Navigation Toggle */}
-          <div className="flex items-center space-x-3 md:hidden">
+          <div className="flex items-center space-x-2 md:hidden">
+            <LanguageSelector />
             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}

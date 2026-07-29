@@ -77,7 +77,10 @@ const DEFAULT_PROJECTS: Project[] = [
   },
 ];
 
+import { useLanguage } from "../context/LanguageContext";
+
 export default function Projects() {
+  const { t } = useLanguage();
   const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
 
   useEffect(() => {
@@ -124,11 +127,11 @@ export default function Projects() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
-            ผลงานของฉัน (Projects)
+            {t("projects_title")}
           </h2>
           <div className="h-1 w-20 bg-blue-600 dark:bg-cyan-500 mx-auto mt-4 rounded-full shadow-[0_0_8px_var(--neon-cyan)]" />
           <p className="text-zinc-550 dark:text-zinc-400 mt-4 max-w-lg mx-auto text-sm sm:text-base font-medium">
-            นี่คือตัวอย่างผลงานบางส่วนที่ได้รับการพัฒนาขึ้น คุณสามารถคลิกปุ่ม GitHub หรือ Figma เพื่อดูรายละเอียด โค้ดต้นฉบับ หรือตัวอย่างการออกแบบได้โดยตรง
+            {t("projects_subtitle")}
           </p>
         </div>
 
