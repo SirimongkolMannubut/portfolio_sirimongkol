@@ -7,7 +7,6 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    // Check local storage or system preference
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     
@@ -36,10 +35,14 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/80 dark:hover:bg-zinc-700/80 text-zinc-700 dark:text-zinc-300 transition-all duration-300 border border-zinc-200/50 dark:border-zinc-700/30 backdrop-blur-sm cursor-pointer shadow-sm active:scale-95"
+      className="p-2 rounded-xl bg-zinc-100/90 hover:bg-zinc-200/90 dark:bg-zinc-900/90 dark:hover:bg-cyan-955/40 text-zinc-700 dark:text-cyan-400 transition-all duration-300 border border-zinc-200/80 dark:border-cyan-500/40 backdrop-blur-sm cursor-pointer shadow-[0_0_12px_rgba(6,182,212,0.15)] active:scale-95 flex items-center justify-center"
       aria-label="Toggle theme"
     >
-      {theme === "light" ? <Moon size={20} className="animate-spin" /> : <Sun size={20} className="animate-pulse" />}
+      {theme === "light" ? (
+        <Moon size={18} className="text-zinc-800 transition-transform duration-300 hover:rotate-12" />
+      ) : (
+        <Sun size={18} className="text-amber-400 dark:text-cyan-300 transition-transform duration-300 hover:rotate-90 animate-pulse" />
+      )}
     </button>
   );
 }
