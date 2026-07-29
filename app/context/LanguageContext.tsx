@@ -57,22 +57,41 @@ export const translations = {
     projects_github: "ดูโค้ดบน GitHub",
     projects_figma: "ดูดีไซน์บน Figma",
 
-    // Project 1: LouisAI
+    // Projects
     proj_louis_desc: "AI-powered LINE chatbot ที่ตอบคำถามอัตโนมัติ พัฒนาด้วย Python และเชื่อมต่อ OpenAI API รองรับการสนทนาเป็นภาษาไทยและอังกฤษ",
-    // Project 2: GreenPoint
     proj_green_desc: "แอปพลิเคชันมือถือและเว็บสำหรับสะสมแต้มสินค้าสีเขียว รองรับการสแกน QR Code รับแต้มจริง ระบบแผนที่พาร์ทเนอร์ และจัดการรูปโปรไฟล์",
 
+    // Activities
     activities_title: "กิจกรรมและประสบการณ์ (Activities)",
+    act_1_title: "นักศึกษาฝึกงาน",
+    act_1_org: "สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน (สพฐ.)",
+    act_1_period: "มิ.ย. - ก.ค. 2567",
+    act_1_desc_1: "พัฒนาและดูแลระบบสารสนเทศภายในองค์กร",
+    act_1_desc_2: "ทำงานร่วมกับทีม IT ในการแก้ปัญหาเทคนิค",
+    act_1_desc_3: "จัดทำเอกสารและคู่มือการใช้งานระบบ",
 
+    act_2_title: "Google Developer Groups (GDG) Training",
+    act_2_org: "Google Developer Groups",
+    act_2_period: "2566",
+    act_2_desc_1: "การพัฒนาเว็บไซต์ด้วย HTML, CSS และ JavaScript",
+    act_2_desc_2: "การพัฒนาเว็บแอปพลิเคชันด้วย Next.js และ React.js",
+    act_2_desc_3: "พื้นฐานการออกแบบ UI/UX สำหรับ Web Application",
+
+    // Contact
     contact_title: "ติดต่อฉัน (Contact)",
     contact_subtitle: "ช่องทางการติดต่อและส่งข้อความ",
+    contact_subtitle_detail: "หากต้องการติดต่อสอบถาม ร่วมงาน หรือสัมภาษณ์ฝึกงาน สามารถติดต่อผมผ่านช่องทางเหล่านี้ หรือกรอกฟอร์มเพื่อส่งข้อความได้โดยตรงครับ",
     contact_channels_title: "ช่องทางการติดต่อ",
     contact_phone: "เบอร์โทรศัพท์",
     contact_email: "อีเมล",
     contact_line: "Line ID",
+    contact_form_title: "ส่งข้อความถึงผม",
     contact_form_name: "ชื่อของคุณ",
+    contact_form_name_placeholder: "สมชาย ใจดี",
     contact_form_email: "อีเมลของคุณ",
+    contact_form_email_placeholder: "somchai@example.com",
     contact_form_message: "ข้อความของคุณ",
+    contact_form_msg_placeholder: "เขียนข้อความของคุณที่นี่...",
     contact_form_send: "ส่งข้อความ",
     contact_form_success: "ส่งข้อความสำเร็จแล้ว! ขอบคุณที่ติดต่อมาครับ",
 
@@ -123,22 +142,41 @@ export const translations = {
     projects_github: "View on GitHub",
     projects_figma: "View on Figma",
 
-    // Project 1: LouisAI
+    // Projects
     proj_louis_desc: "AI-powered LINE chatbot providing automated Q&A responses, built with Python & OpenAI API supporting bilingual conversations.",
-    // Project 2: GreenPoint
     proj_green_desc: "Mobile & Web app for eco-friendly green points collection featuring QR scanning, partner maps, and user profile management.",
 
+    // Activities
     activities_title: "Experience & Activities",
+    act_1_title: "Software Engineering Intern",
+    act_1_org: "Office of the Basic Education Commission (OBEC)",
+    act_1_period: "Jun - Jul 2024",
+    act_1_desc_1: "Developed and maintained internal information systems.",
+    act_1_desc_2: "Collaborated with IT team to solve technical issues.",
+    act_1_desc_3: "Prepared system documentation and user manuals.",
 
+    act_2_title: "Google Developer Groups (GDG) Training",
+    act_2_org: "Google Developer Groups",
+    act_2_period: "2023",
+    act_2_desc_1: "Web development fundamentals with HTML, CSS, and JavaScript.",
+    act_2_desc_2: "Web application development with Next.js and React.js.",
+    act_2_desc_3: "UI/UX design principles for Web Applications.",
+
+    // Contact
     contact_title: "Get In Touch",
     contact_subtitle: "Feel free to reach out via channels below or send a direct message.",
+    contact_subtitle_detail: "Feel free to reach out for work, internship inquiries, or collaboration opportunities via channels below or direct message.",
     contact_channels_title: "Contact Channels",
     contact_phone: "Phone Number",
     contact_email: "Email Address",
     contact_line: "Line ID",
+    contact_form_title: "Send Me a Message",
     contact_form_name: "Your Name",
+    contact_form_name_placeholder: "John Doe",
     contact_form_email: "Your Email",
+    contact_form_email_placeholder: "johndoe@example.com",
     contact_form_message: "Your Message",
+    contact_form_msg_placeholder: "Write your message here...",
     contact_form_send: "Send Message",
     contact_form_success: "Message sent successfully! Thank you.",
 
@@ -189,22 +227,41 @@ export const translations = {
     projects_github: "在 GitHub 查看",
     projects_figma: "在 Figma 查看",
 
-    // Project 1: LouisAI
+    // Projects
     proj_louis_desc: "基于 Python 和 OpenAI API 开发的智能 LINE 聊天机器人，支持泰英双语自动问答服务。",
-    // Project 2: GreenPoint
     proj_green_desc: "环保绿点积分手机与 Web 应用，支持 QR 码扫描领积分、合作商家地图及个人资料管理。",
 
+    // Activities
     activities_title: "经历与活动",
+    act_1_title: "软件开发实习生",
+    act_1_org: "泰国基础教育委员会办公室 (OBEC)",
+    act_1_period: "2024年6月 - 7月",
+    act_1_desc_1: "开发与维护机构内部信息系统。",
+    act_1_desc_2: "与 IT 团队合作解决技术难题。",
+    act_1_desc_3: "编写系统文档与用户使用手册。",
 
+    act_2_title: "谷歌开发者社区 (GDG) 培训",
+    act_2_org: "Google Developer Groups",
+    act_2_period: "2023年",
+    act_2_desc_1: "HTML、CSS 和 JavaScript Web 开发基础。",
+    act_2_desc_2: "基于 Next.js 与 React.js 的 Web 应用开发。",
+    act_2_desc_3: "Web 应用 UI/UX 设计原理。",
+
+    // Contact
     contact_title: "联系我",
     contact_subtitle: "欢迎通过以下方式与我取得联系或直接在线发送消息。",
+    contact_subtitle_detail: "欢迎通过以下联系方式与我交流、探讨合作或面试机会，您也可以在线提交消息。",
     contact_channels_title: "联系方式",
     contact_phone: "电话号码",
     contact_email: "电子邮箱",
     contact_line: "Line ID",
+    contact_form_title: "给我留言",
     contact_form_name: "您的姓名",
+    contact_form_name_placeholder: "张三",
     contact_form_email: "您的邮箱",
+    contact_form_email_placeholder: "zhangsan@example.com",
     contact_form_message: "留言内容",
+    contact_form_msg_placeholder: "在此输入您的留言内容...",
     contact_form_send: "发送消息",
     contact_form_success: "消息发送成功！感谢您的联系。",
 
@@ -255,22 +312,41 @@ export const translations = {
     projects_github: "GitHubで見る",
     projects_figma: "Figmaで見る",
 
-    // Project 1: LouisAI
+    // Projects
     proj_louis_desc: "PythonとOpenAI APIを活用したAI LINEチャットボット。自動応答システムと多言語対話に対応。",
-    // Project 2: GreenPoint
     proj_green_desc: "環境保護ポイント還元アプリ。QRコードスキャン、パートナーマップ、プロフィール管理機能を搭載。",
 
+    // Activities
     activities_title: "活動・経歴",
+    act_1_title: "ソフトウェア開発インターン",
+    act_1_org: "タイ基礎教育委員会事務局 (OBEC)",
+    act_1_period: "2024年6月 - 7月",
+    act_1_desc_1: "組織内情報システムの開発および保守。",
+    act_1_desc_2: "ITチームと協力した技術的問題の解決。",
+    act_1_desc_3: "システムドキュメントおよびマニュアルの作成。",
 
+    act_2_title: "Google Developer Groups (GDG) トレーニング",
+    act_2_org: "Google Developer Groups",
+    act_2_period: "2023年",
+    act_2_desc_1: "HTML、CSS、JavaScriptによるWeb開発の基礎。",
+    act_2_desc_2: "Next.jsおよびReact.jsによるWebアプリ開発。",
+    act_2_desc_3: "Webアプリケーション向けUI/UXデザイン基礎。",
+
+    // Contact
     contact_title: "お問い合わせ",
     contact_subtitle: "下記連絡先、またはフォームよりお気軽にご連絡ください。",
+    contact_subtitle_detail: "お仕事の依頼、インターンシップ、またはコラボレーションに関するお問い合わせは下記よりお願いいたします。",
     contact_channels_title: "連絡先一覧",
     contact_phone: "電話番号",
     contact_email: "メールアドレス",
     contact_line: "Line ID",
+    contact_form_title: "メッセージを送信",
     contact_form_name: "お名前",
+    contact_form_name_placeholder: "山田 太郎",
     contact_form_email: "メールアドレス",
+    contact_form_email_placeholder: "yamada@example.com",
     contact_form_message: "メッセージ内容",
+    contact_form_msg_placeholder: "メッセージ内容をご入力ください...",
     contact_form_send: "送信する",
     contact_form_success: "メッセージが正常に送信されました！ありがとうございます。",
 

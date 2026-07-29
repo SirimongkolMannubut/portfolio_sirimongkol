@@ -42,7 +42,7 @@ const DEFAULT_ACTIVITIES: ActivityItem[] = [
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Activities() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [items, setItems] = useState<ActivityItem[]>(DEFAULT_ACTIVITIES);
 
   useEffect(() => {
@@ -83,45 +83,54 @@ export default function Activities() {
 
         {/* Timeline Layout */}
         <div className="relative border-l-2 border-zinc-200/50 dark:border-zinc-800/80 ml-4 sm:ml-6 space-y-12">
-          {items.map((item, index) => (
-            <div key={index} className="relative pl-8 sm:pl-10">
-              {/* Glowing node node */}
-              <span className="absolute -left-[19px] top-1.5 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-zinc-950 border-2 border-blue-600 dark:border-cyan-500 text-blue-600 dark:text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.3)] z-10">
-                {item.icon}
-              </span>
+          {items.map((item, index) => {
+            const displayTitle = lang !== "th" ? (index === 0 ? t("act_1_title") : t("act_2_title")) : (item.title || (index === 0 ? t("act_1_title") : t("act_2_title")));
+            const displaySubtitle = lang !== "th" ? (index === 0 ? t("act_1_org") : t("act_2_org")) : (item.subtitle || (index === 0 ? t("act_1_org") : t("act_2_org")));
+            const displayDate = lang !== "th" ? (index === 0 ? t("act_1_period") : t("act_2_period")) : (item.date || (index === 0 ? t("act_1_period") : t("act_2_period")));
+            const displayDetails = lang !== "th" 
+              ? (index === 0 ? [t("act_1_desc_1"), t("act_1_desc_2"), t("act_1_desc_3")] : [t("act_2_desc_1"), t("act_2_desc_2"), t("act_2_desc_3")])
+              : (item.details && item.details.length > 0 ? item.details : (index === 0 ? [t("act_1_desc_1"), t("act_1_desc_2"), t("act_1_desc_3")] : [t("act_2_desc_1"), t("act_2_desc_2"), t("act_2_desc_3")]));
 
-              <div className="glass-card p-6 rounded-3xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mt-0.5">
-                      {item.subtitle}
-                    </p>
+            return (
+              <div key={index} className="relative pl-8 sm:pl-10">
+                {/* Glowing node node */}
+                <span className="absolute -left-[19px] top-1.5 flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-zinc-955 border-2 border-blue-600 dark:border-cyan-500 text-blue-600 dark:text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.3)] z-10">
+                  {item.icon}
+                </span>
+
+                <div className="glass-card p-6 rounded-3xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                        {displayTitle}
+                      </h3>
+                      <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 mt-0.5">
+                        {displaySubtitle}
+                      </p>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-blue-50/50 text-blue-600 border border-blue-100/50 dark:bg-cyan-950/20 dark:text-cyan-400 dark:border-cyan-900/40 w-fit h-fit">
+                      <Calendar size={12} />
+                      {displayDate}
+                    </span>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-blue-50/50 text-blue-600 border border-blue-100/50 dark:bg-cyan-950/20 dark:text-cyan-400 dark:border-cyan-900/40 w-fit h-fit">
-                    <Calendar size={12} />
-                    {item.date}
-                  </span>
-                </div>
 
-                {item.details && (
-                  <ul className="space-y-2.5">
-                    {item.details.map((detail, idx) => (
-                      <li
-                        key={idx}
-                        className="text-sm text-zinc-650 dark:text-zinc-350 leading-relaxed list-none relative pl-4 font-medium"
-                      >
-                        <span className="absolute left-0 top-2 w-1.5 h-1.5 bg-blue-600 dark:bg-cyan-400 rounded-full" />
-                        {detail}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                  {displayDetails && (
+                    <ul className="space-y-2.5">
+                      {displayDetails.map((detail, idx) => (
+                        <li
+                          key={idx}
+                          className="text-sm text-zinc-650 dark:text-zinc-350 leading-relaxed list-none relative pl-4 font-medium"
+                        >
+                          <span className="absolute left-0 top-2 w-1.5 h-1.5 bg-blue-600 dark:bg-cyan-400 rounded-full" />
+                          {detail}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

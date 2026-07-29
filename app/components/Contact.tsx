@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Phone, Mail, MessageCircle, Copy, Check, Send } from "lucide-react";
+import { Mail, Phone, MessageCircle, Send, Check, Copy } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 // Custom SVG Icons for Brands
-const GithubIcon = ({ size = 20, className = "" }) => (
+const GithubIcon = ({ size = 16, className = "" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -22,7 +23,24 @@ const GithubIcon = ({ size = 20, className = "" }) => (
   </svg>
 );
 
-const FigmaIcon = ({ size = 20, className = "" }) => (
+const FacebookIcon = ({ size = 16, className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+);
+
+const FigmaIcon = ({ size = 16, className = "" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -43,24 +61,15 @@ const FigmaIcon = ({ size = 20, className = "" }) => (
   </svg>
 );
 
-const FacebookIcon = ({ size = 20, className = "" }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-  </svg>
-);
+type ContactItem = {
+  label: string;
+  value: string;
+  href: string;
+  icon: React.ReactNode;
+  color: string;
+};
 
-const DEFAULT_CONTACT = [
+const DEFAULT_CONTACT: ContactItem[] = [
   {
     label: "เบอร์โทรศัพท์",
     value: "065-590-3845",
@@ -83,8 +92,6 @@ const DEFAULT_CONTACT = [
     color: "bg-green-50 text-green-600 dark:bg-green-955/20 dark:text-green-400 border border-green-100 dark:border-green-900/30",
   },
 ];
-
-import { useLanguage } from "../context/LanguageContext";
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -137,17 +144,6 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // TIP: หากต้องการให้ฟอร์มนี้ส่งข้อความจริงไปยังอีเมลของคุณเมื่อเปิดตัวเว็บ
-    // คุณสามารถสมัครบริการฟรีของ Formspree (formspree.io) หรือ Web3Forms (web3forms.com)
-    // จากนั้นนำ URL ที่ได้มาทำการ fetch POST ที่นี่
-    // ตัวอย่างเช่น:
-    // fetch("https://formspree.io/f/YOUR_FORM_ID", {
-    //   method: "POST",
-    //   body: new FormData(e.target as HTMLFormElement),
-    //   headers: { 'Accept': 'application/json' }
-    // })
-    
     setFormSubmitted(true);
     setTimeout(() => setFormSubmitted(false), 5000);
     (e.target as HTMLFormElement).reset();
@@ -170,51 +166,53 @@ export default function Contact() {
           {/* Contact Details */}
           <div className="lg:col-span-2 space-y-6">
             <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">
-              ช่องทางการติดต่อ
+              {t("contact_channels_title")}
             </h3>
             <p className="text-sm text-zinc-550 dark:text-zinc-400 mb-6 leading-relaxed font-medium">
-              หากต้องการติดต่อสอบถาม ร่วมงาน หรือสัมภาษณ์ฝึกงาน 
-              สามารถติดต่อผมผ่านช่องทางเหล่านี้ หรือกรอกฟอร์มเพื่อส่งข้อความได้โดยตรงครับ
+              {t("contact_subtitle_detail")}
             </p>
 
             <div className="space-y-4">
-              {contactInfo.map((info) => (
-                <div
-                  key={info.label}
-                  className="glass-card p-4.5 rounded-2xl flex items-center justify-between group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-xl ${info.color}`}>
-                      {info.icon}
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-wider">
-                        {info.label}
-                      </span>
-                      <a
-                        href={info.href}
-                        target={info.href.startsWith("http") ? "_blank" : undefined}
-                        rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="text-sm sm:text-base font-bold text-zinc-800 dark:text-zinc-200 hover:text-blue-650 dark:hover:text-cyan-400 transition-colors"
-                      >
-                        {info.value}
-                      </a>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleCopy(info.value)}
-                    className="p-2.5 rounded-xl text-zinc-450 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-500 dark:hover:text-white dark:hover:bg-zinc-900 transition-colors cursor-pointer"
-                    title="คัดลอกข้อมูล"
+              {contactInfo.map((info) => {
+                const labelText = info.label.includes("โทร") ? t("contact_phone") : info.label.includes("เมล") ? t("contact_email") : t("contact_line");
+                return (
+                  <div
+                    key={info.label}
+                    className="glass-card p-4.5 rounded-2xl flex items-center justify-between group"
                   >
-                    {copiedText === info.value ? (
-                      <Check size={16} className="text-green-550" />
-                    ) : (
-                      <Copy size={16} />
-                    )}
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-xl ${info.color}`}>
+                        {info.icon}
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-wider">
+                          {labelText}
+                        </span>
+                        <a
+                          href={info.href}
+                          target={info.href.startsWith("http") ? "_blank" : undefined}
+                          rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          className="text-sm sm:text-base font-bold text-zinc-800 dark:text-zinc-200 hover:text-blue-650 dark:hover:text-cyan-400 transition-colors"
+                        >
+                          {info.value}
+                        </a>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleCopy(info.value)}
+                      className="p-2.5 rounded-xl text-zinc-450 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-500 dark:hover:text-white dark:hover:bg-zinc-900 transition-colors cursor-pointer"
+                      title="คัดลอกข้อมูล"
+                    >
+                      {copiedText === info.value ? (
+                        <Check size={16} className="text-green-550" />
+                      ) : (
+                        <Copy size={16} />
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Links/Social cards */}
@@ -252,13 +250,12 @@ export default function Contact() {
           {/* Contact Form */}
           <div className="lg:col-span-3 glass-card p-6 sm:p-8 rounded-3xl">
             <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-6">
-              ส่งข้อความถึงผม
+              {t("contact_form_title")}
             </h3>
 
             {formSubmitted ? (
               <div className="bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-700 dark:text-emerald-400 p-6 rounded-2xl text-center">
-                <h4 className="font-bold text-lg mb-1">ส่งข้อความสำเร็จ!</h4>
-                <p className="text-sm">ขอบคุณสำหรับข้อความครับ ผมจะติดต่อกลับโดยเร็วที่สุด</p>
+                <h4 className="font-bold text-lg mb-1">{t("contact_form_success")}</h4>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -268,13 +265,13 @@ export default function Contact() {
                       htmlFor="name"
                       className="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-2"
                     >
-                      ชื่อของคุณ
+                      {t("contact_form_name")}
                     </label>
                     <input
                       type="text"
                       id="name"
                       required
-                      placeholder="สมชาย ใจดี"
+                      placeholder={t("contact_form_name_placeholder")}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-cyan-500 focus:border-transparent text-sm transition-all"
                     />
                   </div>
@@ -283,13 +280,13 @@ export default function Contact() {
                       htmlFor="email"
                       className="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-2"
                     >
-                      อีเมลติดต่อ
+                      {t("contact_email")}
                     </label>
                     <input
                       type="email"
                       id="email"
                       required
-                      placeholder="somchai@example.com"
+                      placeholder={t("contact_form_email_placeholder")}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-cyan-500 focus:border-transparent text-sm transition-all"
                     />
                   </div>
@@ -300,13 +297,13 @@ export default function Contact() {
                     htmlFor="message"
                     className="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-2"
                   >
-                    ข้อความ
+                    {t("contact_form_message")}
                   </label>
                   <textarea
                     id="message"
                     required
                     rows={4}
-                    placeholder="เขียนข้อความของคุณที่นี่..."
+                    placeholder={t("contact_form_msg_placeholder")}
                     className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-cyan-500 focus:border-transparent text-sm transition-all resize-none"
                   />
                 </div>
@@ -316,7 +313,7 @@ export default function Contact() {
                   className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-cyan-600 dark:hover:bg-cyan-555 text-white font-semibold shadow-md shadow-blue-200 dark:shadow-none transition-all duration-200 cursor-pointer active:scale-[0.98]"
                 >
                   <Send size={16} />
-                  ส่งข้อความ
+                  {t("contact_form_send")}
                 </button>
               </form>
             )}
