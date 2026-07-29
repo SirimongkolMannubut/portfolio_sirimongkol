@@ -50,8 +50,7 @@ export default function AIChatbot() {
 
     try {
       // Connect to dedicated Gemini AI API microservice endpoint
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-api-git-main-sirimongkolmannubuts-projects.vercel.app/api";
-      const res = await fetch(`${apiUrl}/ai/chat`, {
+      const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
