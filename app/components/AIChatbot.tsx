@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Bot, X, Send, Sparkles, User, RefreshCw, ChevronRight } from "lucide-react";
+import { Bot, X, Send, Sparkles, User, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
 type Message = {
@@ -33,10 +33,23 @@ export default function AIChatbot() {
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -180, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 180, behavior: "smooth" });
+    }
+  };
 
   const handleSend = async (userMsgText?: string) => {
     const textToSend = userMsgText || input;
@@ -127,7 +140,7 @@ export default function AIChatbot() {
 
       {/* Chatbox Window */}
       {isOpen && (
-        <div className="w-[360px] sm:w-[400px] h-[540px] rounded-3xl bg-zinc-950/95 border border-cyan-500/30 shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="w-[360px] sm:w-[400px] h-[550px] rounded-3xl bg-zinc-950/95 border border-cyan-500/30 shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
           {/* Header */}
           <div className="p-4 bg-zinc-900/80 border-b border-zinc-800 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -194,30 +207,52 @@ export default function AIChatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Suggestion Chips (Smooth Horizontally Scrollable & Mouse-Wheelable) */}
-          <div className="border-t border-zinc-900 bg-zinc-950/80 px-2 py-2">
-            <div className="flex items-center justify-between px-2 mb-1.5 text-[10px] text-zinc-500 font-semibold">
-              <span>คำถามแนะนำ (เลื่อนแนวนอนได้):</span>
-              <ChevronRight size={12} className="text-cyan-500 animate-pulse" />
+          {/* Quick Suggestion Chips (With Arrow Scroll Buttons) */}
+          <div className="border-t border-zinc-900 bg-zinc-950/90 px-3 py-2">
+            <div className="text-[10px] text-zinc-500 font-semibold mb-1.5">
+              คำถามแนะนำ (กดปุ่มลูกศร ◀ ▶ เพื่อเลื่อนดูได้):
             </div>
-            <div
-              className="flex gap-2 overflow-x-auto pb-1.5 pt-0.5 px-1 touch-pan-x cursor-grab active:cursor-grabbing scrollbar-thin scrollbar-thumb-cyan-500/40 scrollbar-track-zinc-900"
-              onWheel={(e) => {
-                if (e.deltaY !== 0) {
-                  e.currentTarget.scrollLeft += e.deltaY;
-                }
-              }}
-            >
-              {currentSuggestions.map((s, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSend(s)}
-                  className="whitespace-nowrap px-3 py-1.5 rounded-xl text-[11px] bg-zinc-900 hover:bg-cyan-950/50 hover:border-cyan-400 text-cyan-300 border border-cyan-500/30 transition-all shrink-0 cursor-pointer shadow-sm active:scale-95 flex items-center gap-1.5"
-                >
-                  <span>✨</span>
-                  <span>{s}</span>
-                </button>
-              ))}
+            
+            <div className="flex items-center gap-1.5">
+              {/* Left Arrow Button */}
+              <button
+                onClick={scrollLeft}
+                className="p-1.5 rounded-lg bg-zinc-900 hover:bg-cyan-950 text-cyan-400 border border-cyan-500/30 transition-colors shrink-0 cursor-pointer active:scale-90"
+                title="เลื่อนซ้าย"
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              {/* Scrollable Container */}
+              <div
+                ref={scrollRef}
+                className="flex-1 flex gap-2 overflow-x-auto py-1 scroll-smooth no-scrollbar touch-pan-x"
+                onWheel={(e) => {
+                  if (e.deltaY !== 0) {
+                    e.currentTarget.scrollLeft += e.deltaY;
+                  }
+                }}
+              >
+                {currentSuggestions.map((s, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSend(s)}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-xl text-[11px] bg-zinc-900 hover:bg-cyan-950/60 hover:border-cyan-400 text-cyan-300 border border-cyan-500/30 transition-all shrink-0 cursor-pointer shadow-sm active:scale-95 flex items-center gap-1.5"
+                  >
+                    <span>✨</span>
+                    <span>{s}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Right Arrow Button */}
+              <button
+                onClick={scrollRight}
+                className="p-1.5 rounded-lg bg-zinc-900 hover:bg-cyan-950 text-cyan-400 border border-cyan-500/30 transition-colors shrink-0 cursor-pointer active:scale-90"
+                title="เลื่อนขวา"
+              >
+                <ChevronRight size={16} />
+              </button>
             </div>
           </div>
 
