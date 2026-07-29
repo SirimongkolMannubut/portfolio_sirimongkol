@@ -42,7 +42,7 @@ const FacebookIcon = ({ size = 16, className = "" }) => (
 import { useLanguage } from "../context/LanguageContext";
 
 export default function About() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [profileData, setProfileData] = useState({
     name: "ศิริมงคล มนุบุตร",
@@ -176,7 +176,7 @@ export default function About() {
                 {t("about_bio_title")}
               </h4>
               <p className="text-zinc-650 dark:text-zinc-350 leading-relaxed text-sm sm:text-base font-medium">
-                {profileData.bio || t("about_bio_text")}
+                {lang === "th" && profileData.bio ? profileData.bio : t("about_bio_text")}
               </p>
             </div>
 

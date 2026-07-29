@@ -80,7 +80,7 @@ const DEFAULT_PROJECTS: Project[] = [
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Projects() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
 
   useEffect(() => {
@@ -136,7 +136,7 @@ export default function Projects() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {projects.map((project) => (
+          {projects.map((project, idx) => (
             <div
               key={project.title}
               className={`glass-card rounded-3xl overflow-hidden flex flex-col group ${project.glowColor} hover:-translate-y-1`}
@@ -183,11 +183,9 @@ export default function Projects() {
                 </h3>
 
                 <p className="text-zinc-650 dark:text-zinc-350 text-sm sm:text-base leading-relaxed mb-6 flex-1 font-medium">
-                  {project.title.toLowerCase().includes("louis")
-                    ? t("proj_louis_desc")
-                    : project.title.toLowerCase().includes("green")
-                    ? t("proj_green_desc")
-                    : project.description}
+                  {lang !== "th"
+                    ? (idx === 0 ? t("proj_louis_desc") : t("proj_green_desc"))
+                    : (project.description || (idx === 0 ? t("proj_louis_desc") : t("proj_green_desc")))}
                 </p>
 
                 {/* Tech tags */}
