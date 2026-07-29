@@ -121,8 +121,8 @@ export default function About() {
             </div>
             
             <div className="mt-5 text-center flex flex-col items-center">
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">{profileData.name}</h3>
-              <p className="text-sm font-medium text-zinc-400 dark:text-cyan-400 mt-1 uppercase tracking-wider">{profileData.title}</p>
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">{t("about_name")}</h3>
+              <p className="text-sm font-medium text-zinc-400 dark:text-cyan-400 mt-1 uppercase tracking-wider">{t("about_role_title")}</p>
               
               {/* Quick social links under the title */}
               <div className="mt-5 flex flex-col gap-2.5 w-full max-w-[240px] text-left">
@@ -173,10 +173,10 @@ export default function About() {
             <div className="glass-card p-6 sm:p-8 rounded-3xl">
               <h4 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
                 <span className="w-1.5 h-3.5 bg-blue-650 dark:bg-cyan-500 rounded-full" />
-                ประวัติส่วนตัว
+                {t("about_bio_title")}
               </h4>
               <p className="text-zinc-650 dark:text-zinc-350 leading-relaxed text-sm sm:text-base font-medium">
-                {profileData.bio}
+                {profileData.bio || t("about_bio_text")}
               </p>
             </div>
 
@@ -188,15 +188,15 @@ export default function About() {
                   <BookOpen size={22} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-zinc-900 dark:text-white mb-2">การศึกษา</h4>
+                  <h4 className="font-bold text-zinc-900 dark:text-white mb-2">{t("about_education_title")}</h4>
                   <p className="text-sm font-bold text-zinc-850 dark:text-zinc-200">
-                    {profileData.university}
+                    {t("about_university")}
                   </p>
                   <p className="text-xs text-zinc-550 dark:text-zinc-400 mt-1 leading-relaxed">
-                    {profileData.faculty}
+                    {t("about_faculty")}
                   </p>
                   <div className="inline-flex items-center gap-1 mt-3 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-zinc-900 text-zinc-750 dark:text-zinc-300">
-                    GPA: {profileData.gpa}
+                    {t("about_gpa")}
                   </div>
                 </div>
               </div>
@@ -207,10 +207,10 @@ export default function About() {
                   <Languages size={22} />
                 </div>
                 <div className="w-full">
-                  <h4 className="font-bold text-zinc-900 dark:text-white mb-2">ภาษาอังกฤษ</h4>
+                  <h4 className="font-bold text-zinc-900 dark:text-white mb-2">{t("about_language_title")}</h4>
                   <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-semibold">ระดับความเข้าใจ</span>
-                    <span className="font-bold text-zinc-850 dark:text-zinc-200 text-xs">Intermediate</span>
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-semibold">{t("about_language_level_title")}</span>
+                    <span className="font-bold text-zinc-850 dark:text-zinc-200 text-xs">{t("about_language_level")}</span>
                   </div>
                   <div className="w-full bg-zinc-100 dark:bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-200/50 dark:border-zinc-800/80">
                     <div className="bg-gradient-to-r from-blue-650 to-indigo-600 dark:from-cyan-500 dark:to-indigo-500 h-full rounded-full w-[65%]" />
@@ -223,7 +223,7 @@ export default function About() {
             <div className="glass-card p-6 rounded-3xl">
               <div className="flex items-center gap-2 mb-4 text-zinc-900 dark:text-white">
                 <Heart size={20} className="text-rose-500" />
-                <h4 className="font-bold">ความสนใจ (Interests)</h4>
+                <h4 className="font-bold">{t("about_interests_title")}</h4>
               </div>
               <div className="flex flex-wrap gap-2.5">
                 {interests.map((interest) => (

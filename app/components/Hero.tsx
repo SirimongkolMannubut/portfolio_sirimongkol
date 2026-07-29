@@ -151,12 +151,6 @@ export default function Hero() {
             >
               {t("hero_btn_contact")}
             </button>
-            <a
-              href="/admin"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6.5 py-3 rounded-2xl bg-gradient-to-r from-blue-600/10 to-indigo-600/10 dark:from-cyan-500/10 dark:to-violet-500/10 border border-blue-500/30 dark:border-cyan-500/30 text-blue-600 dark:text-cyan-400 font-semibold transition-all duration-300 cursor-pointer active:scale-95"
-            >
-              🔐 Admin CMS
-            </a>
           </div>
 
           <div className="flex justify-center lg:justify-start items-center gap-5 pt-2 text-zinc-450 dark:text-zinc-500">

@@ -183,7 +183,11 @@ export default function Projects() {
                 </h3>
 
                 <p className="text-zinc-650 dark:text-zinc-350 text-sm sm:text-base leading-relaxed mb-6 flex-1 font-medium">
-                  {project.description}
+                  {project.title.toLowerCase().includes("louis")
+                    ? t("proj_louis_desc")
+                    : project.title.toLowerCase().includes("green")
+                    ? t("proj_green_desc")
+                    : project.description}
                 </p>
 
                 {/* Tech tags */}
@@ -207,17 +211,17 @@ export default function Projects() {
                     className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-850 dark:hover:bg-zinc-750 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
                   >
                     <GithubIcon size={16} />
-                    GitHub
+                    {t("projects_github")}
                   </a>
                   {project.figmaUrl && (
                     <a
                       href={project.figmaUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-pink-50 hover:bg-pink-100 dark:bg-pink-955/20 dark:hover:bg-pink-950/30 text-pink-650 dark:text-pink-400 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border border-pink-100 dark:border-pink-900/50"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/30 font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
                     >
                       <FigmaIcon size={16} />
-                      Figma
+                      {t("projects_figma")}
                     </a>
                   )}
                   {!project.figmaUrl && (
