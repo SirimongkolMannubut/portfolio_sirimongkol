@@ -63,9 +63,27 @@ const FacebookIcon = ({ size = 20, className = "" }) => (
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Hero() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [terminalText, setTerminalText] = useState<string[]>([]);
   const [activeLine, setActiveLine] = useState(0);
+  const [profileData, setProfileData] = useState<{ name?: string; title?: string }>({});
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && (data.name || data.title)) {
+          setProfileData({
+            name: data.name,
+            title: data.title,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const logs = [
     "Initializing Sirimongkol.OS...",
@@ -125,12 +143,12 @@ export default function Hero() {
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-none">
             <span className="block text-zinc-900 dark:text-white mb-2">{t("hero_greeting")}</span>
             <span className="block bg-gradient-to-r from-blue-605 via-cyan-600 to-indigo-600 dark:from-cyan-400 dark:via-blue-400 dark:to-violet-400 bg-clip-text text-transparent pb-2 filter drop-shadow-sm font-black">
-              {t("hero_name")}
+              {lang === "th" && profileData.name ? profileData.name : t("hero_name")}
             </span>
           </h1>
 
           <p className="text-lg sm:text-xl font-bold tracking-wide text-zinc-700 dark:text-zinc-350">
-            {t("hero_role")}
+            {lang === "th" && profileData.title ? profileData.title : t("hero_role")}
           </p>
 
           <p className="text-sm sm:text-base text-zinc-550 dark:text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
