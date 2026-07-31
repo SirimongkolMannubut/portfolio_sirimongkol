@@ -63,6 +63,9 @@ export default function AdminPage() {
     facebook: "",
   });
 
+  // Messages State
+  const [receivedMessages, setReceivedMessages] = useState<any[]>([]);
+
   const showToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(""), 3500);
@@ -108,6 +111,14 @@ export default function AdminPage() {
     fetchProjects();
     fetchSkills();
     fetchContact();
+    fetchMessages();
+  };
+
+  const fetchMessages = () => {
+    fetch("/api/contact?type=messages")
+      .then((r) => r.json())
+      .then((d) => setReceivedMessages(Array.isArray(d) ? d : []))
+      .catch(() => {});
   };
 
   const fetchProfile = () => {
@@ -314,6 +325,19 @@ export default function AdminPage() {
               }`}
             >
               📬 ข้อมูลติดต่อ
+            </button>
+            <button
+              onClick={() => setActiveTab("messages")}
+              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-colors ${
+                activeTab === "messages" ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30" : "text-zinc-400 hover:bg-zinc-800"
+              }`}
+            >
+              <span>📥 ข้อความจากผู้ติดต่อ</span>
+              {receivedMessages.length > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-cyan-500 text-zinc-950">
+                  {receivedMessages.length}
+                </span>
+              )}
             </button>
           </nav>
         </div>
@@ -531,6 +555,45 @@ export default function AdminPage() {
                 💾 บันทึกข้อมูลติดต่อ
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Messages Tab */}
+        {activeTab === "messages" && (
+          <div className="max-w-4xl space-y-6">
+            <div>
+              <h1 className="text-2xl font-bold">📥 ข้อความที่ได้รับจากหน้าเว็บ ({receivedMessages.length})</h1>
+              <p className="text-zinc-400 text-sm mt-1">
+                รายชื่อผู้ติดต่อ ข้อความ และอีเมลที่ส่งมาจากฟอร์มหน้าเว็บ (บันทึกใน MongoDB Atlas สดๆ)
+              </p>
+            </div>
+
+            {receivedMessages.length === 0 ? (
+              <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-12 text-center text-zinc-500 font-medium">
+                ยังไม่มีข้อความใหม่เข้ามาในขณะนี้
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {receivedMessages.map((msg: any) => (
+                  <div key={msg._id} className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{msg.name}</h3>
+                        <a href={`mailto:${msg.email}`} className="text-xs text-cyan-400 font-semibold hover:underline">
+                          ✉️ {msg.email}
+                        </a>
+                      </div>
+                      <span className="text-[11px] text-zinc-500 font-mono">
+                        📅 {new Date(msg.createdAt).toLocaleString("th-TH")}
+                      </span>
+                    </div>
+                    <p className="text-sm text-zinc-300 leading-relaxed font-medium whitespace-pre-wrap bg-zinc-955 p-4 rounded-2xl border border-zinc-800">
+                      {msg.message}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

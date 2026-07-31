@@ -97,6 +97,8 @@ export default function Contact() {
   const { t } = useLanguage();
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [contactInfo, setContactInfo] = useState(DEFAULT_CONTACT);
 
   useEffect(() => {
@@ -142,11 +144,28 @@ export default function Contact() {
     setTimeout(() => setCopiedText(null), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 5000);
-    (e.target as HTMLFormElement).reset();
+    if (isSending) return;
+    setIsSending(true);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setFormSubmitted(true);
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setFormSubmitted(false), 5000);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -271,6 +290,8 @@ export default function Contact() {
                       type="text"
                       id="name"
                       required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder={t("contact_form_name_placeholder")}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-cyan-500 focus:border-transparent text-sm transition-all"
                     />
@@ -286,6 +307,8 @@ export default function Contact() {
                       type="email"
                       id="email"
                       required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder={t("contact_form_email_placeholder")}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-cyan-500 focus:border-transparent text-sm transition-all"
                     />
@@ -303,6 +326,8 @@ export default function Contact() {
                     id="message"
                     required
                     rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder={t("contact_form_msg_placeholder")}
                     className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-cyan-500 focus:border-transparent text-sm transition-all resize-none"
                   />
@@ -310,10 +335,11 @@ export default function Contact() {
 
                 <button
                   type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-cyan-600 dark:hover:bg-cyan-555 text-white font-semibold shadow-md shadow-blue-200 dark:shadow-none transition-all duration-200 cursor-pointer active:scale-[0.98]"
+                  disabled={isSending}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-cyan-600 dark:hover:bg-cyan-555 text-white font-semibold shadow-md shadow-blue-200 dark:shadow-none transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-50"
                 >
                   <Send size={16} />
-                  {t("contact_form_send")}
+                  {isSending ? "กำลังส่งข้อความ..." : t("contact_form_send")}
                 </button>
               </form>
             )}
