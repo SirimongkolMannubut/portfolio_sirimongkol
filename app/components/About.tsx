@@ -44,7 +44,16 @@ import { useLanguage } from "../context/LanguageContext";
 export default function About() {
   const { t, lang } = useLanguage();
   const [imgError, setImgError] = useState(false);
-  const [profileData, setProfileData] = useState({
+  const [profileData, setProfileData] = useState<{
+    name: string;
+    title: string;
+    bio: string;
+    university: string;
+    faculty: string;
+    gpa: number;
+    profileImage: string;
+    interests: string[];
+  }>({
     name: "ศิริมงคล มนุบุตร",
     title: "Computer Science Student · Developer",
     bio: "นักศึกษาสาขาวิทยาการคอมพิวเตอร์ที่มุ่งมั่นในการพัฒนา Web Application และเทคโนโลยี AI มีประสบการณ์ในการพัฒนาระบบ Full-Stack ทั้งฝั่ง Front-end และ Back-end รวมถึงการออกแบบฐานข้อมูลและการประยุกต์ใช้ AI ในงานจริง พร้อมเปิดรับความรู้และความท้าทายใหม่ ๆ เพื่อพัฒนาศักยภาพในการเป็น Software Developer ในอนาคต",
@@ -52,6 +61,12 @@ export default function About() {
     faculty: "วิทยาศาสตรบัณฑิต สาขาวิทยาการคอมพิวเตอร์",
     gpa: 3.05,
     profileImage: "",
+    interests: [
+      "Web Application Development",
+      "AI & Machine Learning",
+      "UI/UX Design",
+      "Database Architecture",
+    ],
   });
 
   useEffect(() => {
@@ -71,20 +86,19 @@ export default function About() {
             faculty: data.faculty || "วิทยาศาสตรบัณฑิต สาขาวิทยาการคอมพิวเตอร์",
             gpa: data.gpa || 3.05,
             profileImage: data.profileImage || "",
+            interests: Array.isArray(data.interests) && data.interests.length > 0
+              ? data.interests
+              : [
+                  "Web Application Development",
+                  "AI & Machine Learning",
+                  "UI/UX Design",
+                  "Database Architecture",
+                ],
           });
         }
       })
       .catch(() => {});
   }, []);
-
-  const interests = [
-    "AI",
-    "Web Development",
-    "UI/UX Design",
-    "Mobile App Development",
-    "Graphic Design",
-    "IT Support",
-  ];
 
   return (
     <section id="about" className="py-20 relative bg-zinc-550/5 dark:bg-zinc-950/20 overflow-hidden">
@@ -226,7 +240,7 @@ export default function About() {
                 <h4 className="font-bold">{t("about_interests_title")}</h4>
               </div>
               <div className="flex flex-wrap gap-2.5">
-                {interests.map((interest) => (
+                {profileData.interests.map((interest) => (
                   <span
                     key={interest}
                     className="px-3.5 py-1.5 rounded-xl text-sm font-semibold bg-zinc-100/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-350 border border-zinc-200/40 dark:border-zinc-800/60 hover:border-blue-300 dark:hover:border-cyan-800 hover:text-blue-600 dark:hover:text-cyan-400 transition-all duration-300"

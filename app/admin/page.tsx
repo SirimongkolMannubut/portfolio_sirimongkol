@@ -11,7 +11,16 @@ export default function AdminPage() {
   const [toastMsg, setToastMsg] = useState("");
 
   // Profile Form State
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<{
+    name: string;
+    title: string;
+    bio: string;
+    university: string;
+    faculty: string;
+    gpa: number;
+    profileImage: string;
+    interestsInput?: string;
+  }>({
     name: "",
     title: "",
     bio: "",
@@ -19,6 +28,7 @@ export default function AdminPage() {
     faculty: "",
     gpa: 3.05,
     profileImage: "",
+    interestsInput: "",
   });
 
   // Projects State
@@ -103,19 +113,34 @@ export default function AdminPage() {
   const fetchProfile = () => {
     fetch("/api/profile")
       .then((r) => r.json())
-      .then((d) => setProfile(d))
+      .then((d) => {
+        if (d) {
+          setProfile({
+            ...d,
+            interestsInput: Array.isArray(d.interests) ? d.interests.join(", ") : "",
+          });
+        }
+      })
       .catch(() => {});
   };
 
   const saveProfile = async () => {
     try {
+      const payload = {
+        ...profile,
+        interests: (profile.interestsInput || "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+      };
       const res = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profile),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Failed to save");
       showToast("✅ บันทึกโปรไฟล์สำเร็จ!");
+      fetchProfile();
     } catch (err: any) {
       showToast("❌ " + err.message);
     }
@@ -384,6 +409,18 @@ export default function AdminPage() {
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase text-cyan-400 mb-1">
+                  ความสนใจ (Interests - คั่นแต่ละรายการด้วยเครื่องหมายจุลภาค ,)
+                </label>
+                <input
+                  type="text"
+                  value={profile.interestsInput || ""}
+                  onChange={(e) => setProfile({ ...profile, interestsInput: e.target.value })}
+                  placeholder="เช่น Web Application Development, AI & Machine Learning, UI/UX Design, Mobile Development"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-cyan-500"
+                />
               </div>
               <button
                 onClick={saveProfile}
