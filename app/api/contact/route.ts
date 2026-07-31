@@ -43,17 +43,20 @@ export async function POST(request: Request) {
     // 1. Save message to MongoDB Atlas database
     const savedMsg = await Message.create({ name, email, message });
 
-    // 2. Forward notification to Web3Forms (Sends directly to topt75870@gmail.com)
+    // 2. Forward email notification to topt75870@gmail.com via FormSubmit
     try {
-      await fetch("https://api.web3forms.com/submit", {
+      await fetch("https://formsubmit.co/ajax/topt75870@gmail.com", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({
-          access_key: process.env.WEB3FORMS_ACCESS_KEY || "8c35a821-2a91-45ec-99e5-6bcfc70f8072",
           name,
           email,
           message,
-          subject: `📬 ข้อความใหม่จากเว็บ Portfolio จากคุณ ${name}`,
+          _subject: `📬 มีข้อความใหม่จากเว็บ Portfolio จากคุณ ${name}`,
+          _template: "table",
         }),
       });
     } catch (emailErr) {

@@ -150,19 +150,34 @@ export default function Contact() {
     setIsSending(true);
 
     try {
-      const res = await fetch("/api/contact", {
+      // 1. Save to MongoDB Atlas via native API route
+      await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        setFormSubmitted(true);
-        setFormData({ name: "", email: "", message: "" });
-        setTimeout(() => setFormSubmitted(false), 5000);
-      }
+      // 2. Direct client-side POST to FormSubmit for 100% email delivery to Gmail
+      await fetch("https://formsubmit.co/ajax/topt75870@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `📬 ข้อความใหม่จากเว็บ Portfolio จากคุณ ${formData.name}`,
+          _template: "table",
+        }),
+      });
+
+      setFormSubmitted(true);
+      setFormData({ name: "", email: "", message: "" });
+      setTimeout(() => setFormSubmitted(false), 6000);
     } catch (err) {
-      console.error(err);
+      console.error("Submit error:", err);
     } finally {
       setIsSending(false);
     }
