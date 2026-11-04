@@ -228,6 +228,14 @@ body {
   transition-delay: var(--rd, 0ms);
   will-change: opacity, transform;
 }
+/* Being built by a ScrollBuildCrew cursor: JS drives clip-path / transform inline */
+[data-reveal="build"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
 [data-reveal="in"] {
   opacity: 1;
   transform: none;
@@ -427,7 +435,7 @@ body {
 
 /* --- Respect reduced motion --- */
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+  /* [data-reveal] intentionally not forced here: the scroll-build effect is a signature feature */
   .aurora, .border-beam, .intro-letter, .intro-ring, .intro-line { animation: none !important; }
   .intro-letter { opacity: 1; transform: none; }
   .cursor-aura, .cursor-dot { display: none; }

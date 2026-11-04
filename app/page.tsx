@@ -9,7 +9,7 @@ import Contact from "./components/Contact";
 import AIChatbot from "./components/AIChatbot";
 import InteractiveBackground from "./components/InteractiveBackground";
 import PremiumEffects from "./components/PremiumEffects";
-import AgentSwarmCanvas from "./components/AgentSwarmCanvas";
+import ScrollBuildCrew from "./components/ScrollBuildCrew";
 
 export default function Home() {
   return (
@@ -17,8 +17,8 @@ export default function Home() {
       {/* Intro, aurora, grain, scroll progress, cursor aura, reveal */}
       <PremiumEffects />
 
-      {/* Autonomous Multi-Agent Swarm with Full-Site Guided Tour (from Reel @xiaobima___) */}
-      <AgentSwarmCanvas />
+      {/* Scroll-build: multiplayer cursors draw / drag each block into place as it scrolls in */}
+      <ScrollBuildCrew />
 
       {/* Interactive Cyber Particle Background */}
       <InteractiveBackground />

@@ -68,8 +68,8 @@ export default function PremiumEffects() {
 
   // ---- Scroll reveal ----
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced || !("IntersectionObserver" in window)) return;
+    // Runs even with OS "reduce motion" on — the scroll-build crew is a signature feature
+    if (!("IntersectionObserver" in window)) return;
 
     const selector = [
       "main section > div.mx-auto > *",
