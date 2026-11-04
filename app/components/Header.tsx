@@ -1,15 +1,27 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, Sparkles, Code2 } from "lucide-react";
+import { Menu, X, Sparkles, Code2, Volume2, VolumeX } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import LanguageSelector from "./LanguageSelector";
 import { useLanguage } from "../context/LanguageContext";
+import { isSoundEnabled, toggleSound, playClickSound, playHoverSound } from "../lib/audio";
 
 export default function Header() {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+
+  useEffect(() => {
+    setSoundOn(isSoundEnabled());
+  }, []);
+
+  const handleToggleSound = () => {
+    const next = toggleSound();
+    setSoundOn(next);
+    if (next) playClickSound();
+  };
 
   const navItems = [
     { label: t("nav_home"), href: "#home" },
@@ -99,12 +111,31 @@ export default function Header() {
                 </a>
               ))}
               <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-800 mx-2" />
+              <button
+                type="button"
+                onClick={handleToggleSound}
+                onMouseEnter={playHoverSound}
+                className="p-2 rounded-xl text-zinc-600 dark:text-cyan-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200/50 dark:border-cyan-500/30 transition-all cursor-pointer shadow-xs"
+                title={soundOn ? "Mute Cyber SFX" : "Enable Cyber SFX"}
+                aria-label="Toggle Cyber Sound Effects"
+              >
+                {soundOn ? <Volume2 size={17} className="text-cyan-400" /> : <VolumeX size={17} className="text-zinc-400" />}
+              </button>
               <LanguageSelector />
               <ThemeToggle />
             </nav>
 
             {/* Mobile Navigation Toggle */}
             <div className="flex items-center space-x-2 md:hidden">
+              <button
+                type="button"
+                onClick={handleToggleSound}
+                className="p-2 rounded-xl text-zinc-600 dark:text-cyan-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200/50 dark:border-cyan-500/30 transition-all cursor-pointer"
+                title={soundOn ? "Mute Cyber SFX" : "Enable Cyber SFX"}
+                aria-label="Toggle Cyber Sound Effects"
+              >
+                {soundOn ? <Volume2 size={18} className="text-cyan-400" /> : <VolumeX size={18} className="text-zinc-400" />}
+              </button>
               <LanguageSelector />
               <ThemeToggle />
               <button
