@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Sparkles, RotateCw, Layers, Compass, Volume2, VolumeX } from "lucide-react";
+import { Sparkles, RotateCw, Layers, Compass, Volume2, VolumeX, Eye } from "lucide-react";
 import { playHoverSound, playClickSound, playWarpSound, toggleSound, isSoundEnabled } from "../lib/audio";
 
-type VisualMode = "quantum" | "particles" | "shield";
+type VisualMode = "chrome" | "quantum" | "crystal";
 
 export default function Astra3DHero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mode, setMode] = useState<VisualMode>("quantum");
+  const [mode, setMode] = useState<VisualMode>("chrome");
   const [soundOn, setSoundOn] = useState<boolean>(true);
   const [fps, setFps] = useState<number>(60);
   const [isInteracting, setIsInteracting] = useState<boolean>(false);
@@ -27,7 +27,7 @@ export default function Astra3DHero() {
     const container = containerRef.current;
     if (!container) return;
 
-    // --- Scene Setup ---
+    // --- Scene & Camera Setup ---
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(
@@ -36,7 +36,7 @@ export default function Astra3DHero() {
       0.1,
       1000
     );
-    camera.position.z = 5.2;
+    camera.position.set(0, 0, 5.2);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -45,48 +45,104 @@ export default function Astra3DHero() {
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.35;
     container.appendChild(renderer.domElement);
 
-    // --- Central 3D Group ---
+    // --- Studio Lighting Setup for High-End PBR Reflection ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.0);
+    dirLight1.position.set(5, 8, 5);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 1.5);
+    dirLight2.position.set(-5, -4, -2);
+    scene.add(dirLight2);
+
+    // Orbiting Neon Point Lights for Liquid Chrome Highlights
+    const pointLightCyan = new THREE.PointLight(0x06b6d4, 15, 12);
+    scene.add(pointLightCyan);
+
+    const pointLightPurple = new THREE.PointLight(0xa855f7, 15, 12);
+    scene.add(pointLightPurple);
+
+    // Light Helper Sparks
+    const sparkGeo = new THREE.SphereGeometry(0.04, 8, 8);
+    const sparkMatCyan = new THREE.MeshBasicMaterial({ color: 0x22d3ee });
+    const sparkCyan = new THREE.Mesh(sparkGeo, sparkMatCyan);
+    pointLightCyan.add(sparkCyan);
+
+    const sparkMatPurple = new THREE.MeshBasicMaterial({ color: 0xc084fc });
+    const sparkPurple = new THREE.Mesh(sparkGeo, sparkMatPurple);
+    pointLightPurple.add(sparkPurple);
+
+    // --- Main Spatial 3D Group ---
     const mainGroup = new THREE.Group();
     scene.add(mainGroup);
 
-    // 1. Outer Wireframe Icosahedron
-    const icoGeometry = new THREE.IcosahedronGeometry(1.6, 1);
-    const icoMaterial = new THREE.MeshBasicMaterial({
-      color: 0x06b6d4,
+    // 1. Core Object A: High-End Liquid Chrome Torus Knot
+    const knotGeometry = new THREE.TorusKnotGeometry(0.88, 0.26, 128, 32);
+    const chromeMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x0f172a,
+      emissive: 0x020617,
+      roughness: 0.12,
+      metalness: 0.95,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.08,
+      reflectivity: 1.0,
+      wireframe: false,
+    });
+    const knotMesh = new THREE.Mesh(knotGeometry, chromeMaterial);
+    mainGroup.add(knotMesh);
+
+    // 2. Core Object B: Quantum Pulsing Sphere (for Quantum Mode)
+    const sphereGeometry = new THREE.IcosahedronGeometry(0.9, 4);
+    const quantumMaterial = new THREE.MeshStandardMaterial({
+      color: 0x1e1b4b,
+      emissive: 0x4338ca,
+      emissiveIntensity: 0.8,
+      roughness: 0.2,
+      metalness: 0.8,
       wireframe: true,
+    });
+    const sphereMesh = new THREE.Mesh(sphereGeometry, quantumMaterial);
+    sphereMesh.visible = false;
+    mainGroup.add(sphereMesh);
+
+    // 3. Faceted Prismatic Crystal Cage
+    const cageGeometry = new THREE.IcosahedronGeometry(1.68, 0);
+    const crystalMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x38bdf8,
+      roughness: 0.1,
+      metalness: 0.1,
+      transmission: 0.75,
+      opacity: 0.35,
+      transparent: true,
+      ior: 1.52,
+      flatShading: true,
+    });
+    const crystalMesh = new THREE.Mesh(cageGeometry, crystalMaterial);
+    mainGroup.add(crystalMesh);
+
+    // 3.1 Crystal Edge Wireframe
+    const wireframeGeo = new THREE.WireframeGeometry(cageGeometry);
+    const wireMat = new THREE.LineBasicMaterial({
+      color: 0x06b6d4,
       transparent: true,
       opacity: 0.45,
     });
-    const icoMesh = new THREE.Mesh(icoGeometry, icoMaterial);
-    mainGroup.add(icoMesh);
-
-    // 2. Inner Glowing Core
-    const coreGeometry = new THREE.IcosahedronGeometry(0.9, 2);
-    const coreMaterial = new THREE.MeshBasicMaterial({
-      color: 0x818cf8,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.8,
-    });
-    const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
-    mainGroup.add(coreMesh);
-
-    // 3. Central Solid Energy Node
-    const nodeGeometry = new THREE.SphereGeometry(0.35, 16, 16);
-    const nodeMaterial = new THREE.MeshBasicMaterial({
-      color: 0x22d3ee,
-    });
-    const nodeMesh = new THREE.Mesh(nodeGeometry, nodeMaterial);
-    mainGroup.add(nodeMesh);
+    const wireLine = new THREE.LineSegments(wireframeGeo, wireMat);
+    crystalMesh.add(wireLine);
 
     // 4. Orbital Rings (Cyber Gyroscope)
-    const ringGeometry = new THREE.TorusGeometry(2.1, 0.02, 16, 100);
-    const ringMaterial = new THREE.MeshBasicMaterial({
+    const ringGeometry = new THREE.TorusGeometry(2.1, 0.018, 16, 100);
+    const ringMaterial = new THREE.MeshStandardMaterial({
       color: 0xa855f7,
-      transparent: true,
-      opacity: 0.6,
+      emissive: 0x581c87,
+      metalness: 0.9,
+      roughness: 0.2,
     });
     const ring1 = new THREE.Mesh(ringGeometry, ringMaterial);
     ring1.rotation.x = Math.PI / 3;
@@ -96,18 +152,18 @@ export default function Astra3DHero() {
     ring2.rotation.y = Math.PI / 3;
     mainGroup.add(ring2);
 
-    // 5. Cloud of Particles (Astra Stars)
-    const particleCount = 700;
+    // 5. Orbital Particles Galaxy (Astra Stars)
+    const particleCount = 850;
     const particleGeometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const color1 = new THREE.Color(0x06b6d4); // cyan
-    const color2 = new THREE.Color(0xa855f7); // purple
-    const color3 = new THREE.Color(0x3b82f6); // blue
+    const cCyan = new THREE.Color(0x38bdf8);
+    const cPurple = new THREE.Color(0xc084fc);
+    const cEmerald = new THREE.Color(0x34d399);
 
     for (let i = 0; i < particleCount; i++) {
-      const radius = 2.2 + Math.random() * 2.2;
+      const radius = 2.0 + Math.random() * 2.8;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
 
@@ -115,7 +171,7 @@ export default function Astra3DHero() {
       positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = radius * Math.cos(phi);
 
-      const mixed = i % 3 === 0 ? color1 : i % 3 === 1 ? color2 : color3;
+      const mixed = i % 3 === 0 ? cCyan : i % 3 === 1 ? cPurple : cEmerald;
       colors[i * 3] = mixed.r;
       colors[i * 3 + 1] = mixed.g;
       colors[i * 3 + 2] = mixed.b;
@@ -125,19 +181,31 @@ export default function Astra3DHero() {
     particleGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const particleMaterial = new THREE.PointsMaterial({
-      size: 0.045,
+      size: 0.04,
       vertexColors: true,
       transparent: true,
       opacity: 0.85,
+      blending: THREE.AdditiveBlending,
     });
     const particles = new THREE.Points(particleGeometry, particleMaterial);
     mainGroup.add(particles);
 
-    // --- Interactive Drag Controls ---
+    // --- Interactive Mouse Parallax & Drag Controls ---
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
     let targetRotationX = 0;
     let targetRotationY = 0;
+    let mouseParallaxX = 0;
+    let mouseParallaxY = 0;
+
+    // Hover parallax tracking
+    const onContainerMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      mouseParallaxX = x * 0.35;
+      mouseParallaxY = y * 0.35;
+    };
 
     const onPointerDown = (e: PointerEvent) => {
       isDragging = true;
@@ -151,8 +219,8 @@ export default function Astra3DHero() {
         const deltaX = e.clientX - previousMousePosition.x;
         const deltaY = e.clientY - previousMousePosition.y;
 
-        targetRotationY += deltaX * 0.008;
-        targetRotationX += deltaY * 0.008;
+        targetRotationY += deltaX * 0.009;
+        targetRotationX += deltaY * 0.009;
 
         previousMousePosition = { x: e.clientX, y: e.clientY };
       }
@@ -165,6 +233,7 @@ export default function Astra3DHero() {
 
     const domElement = renderer.domElement;
     domElement.addEventListener("pointerdown", onPointerDown);
+    container.addEventListener("mousemove", onContainerMouseMove);
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
 
@@ -195,28 +264,41 @@ export default function Astra3DHero() {
         lastTime = time;
       }
 
-      // Smooth damped rotation
-      mainGroup.rotation.y += (targetRotationY - mainGroup.rotation.y) * 0.06;
-      mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.06;
+      const tSec = time * 0.001;
+
+      // Orbiting dynamic point lights
+      pointLightCyan.position.x = Math.sin(tSec * 1.5) * 3.2;
+      pointLightCyan.position.y = Math.cos(tSec * 1.2) * 2.5;
+      pointLightCyan.position.z = Math.cos(tSec * 1.5) * 3.2;
+
+      pointLightPurple.position.x = -Math.sin(tSec * 1.3) * 3.2;
+      pointLightPurple.position.y = -Math.cos(tSec * 1.4) * 2.5;
+      pointLightPurple.position.z = -Math.cos(tSec * 1.3) * 3.2;
+
+      // Smooth damped rotation & parallax
+      mainGroup.rotation.y += (targetRotationY + mouseParallaxX - mainGroup.rotation.y) * 0.06;
+      mainGroup.rotation.x += (targetRotationX - mouseParallaxY - mainGroup.rotation.x) * 0.06;
 
       // Continuous ambient rotation
       if (!isDragging) {
-        targetRotationY += 0.004;
-        targetRotationX = Math.sin(time * 0.001) * 0.15;
+        targetRotationY += 0.005;
+        targetRotationX = Math.sin(tSec * 0.5) * 0.12;
       }
 
       // Component-specific inner rotation
-      coreMesh.rotation.y -= 0.009;
-      coreMesh.rotation.x += 0.005;
+      knotMesh.rotation.x += 0.007;
+      knotMesh.rotation.y += 0.009;
 
-      ring1.rotation.z += 0.01;
-      ring2.rotation.z -= 0.008;
+      sphereMesh.rotation.y += 0.012;
+      sphereMesh.rotation.x += 0.008;
 
-      particles.rotation.y += 0.0015;
+      crystalMesh.rotation.y -= 0.003;
+      crystalMesh.rotation.z += 0.002;
 
-      // Pulsing scale based on mode
-      const pulse = 1 + Math.sin(time * 0.003) * 0.06;
-      nodeMesh.scale.set(pulse, pulse, pulse);
+      ring1.rotation.z += 0.008;
+      ring2.rotation.z -= 0.006;
+
+      particles.rotation.y += 0.001;
 
       renderer.render(scene, camera);
     };
@@ -224,18 +306,21 @@ export default function Astra3DHero() {
 
     // Store references for mode switching
     (container as any)._three = {
-      icoMesh,
-      coreMesh,
-      nodeMesh,
+      knotMesh,
+      sphereMesh,
+      crystalMesh,
       ring1,
       ring2,
       particles,
+      chromeMaterial,
+      crystalMaterial,
     };
 
     // Cleanup
     return () => {
       cancelAnimationFrame(frameId);
       domElement.removeEventListener("pointerdown", onPointerDown);
+      container.removeEventListener("mousemove", onContainerMouseMove);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("resize", handleResize);
@@ -245,12 +330,14 @@ export default function Astra3DHero() {
       }
 
       // Dispose Three.js objects
-      icoGeometry.dispose();
-      icoMaterial.dispose();
-      coreGeometry.dispose();
-      coreMaterial.dispose();
-      nodeGeometry.dispose();
-      nodeMaterial.dispose();
+      knotGeometry.dispose();
+      chromeMaterial.dispose();
+      sphereGeometry.dispose();
+      quantumMaterial.dispose();
+      cageGeometry.dispose();
+      crystalMaterial.dispose();
+      wireframeGeo.dispose();
+      wireMat.dispose();
       ringGeometry.dispose();
       ringMaterial.dispose();
       particleGeometry.dispose();
@@ -265,46 +352,44 @@ export default function Astra3DHero() {
     playWarpSound();
     const container = containerRef.current;
     if (!container || !(container as any)._three) return;
-    const { icoMesh, coreMesh, ring1, ring2, particles } = (container as any)._three;
+    const { knotMesh, sphereMesh, crystalMesh, particles, chromeMaterial } = (container as any)._three;
 
-    if (newMode === "quantum") {
-      icoMesh.visible = true;
-      coreMesh.visible = true;
-      ring1.visible = true;
-      ring2.visible = true;
+    if (newMode === "chrome") {
+      knotMesh.visible = true;
+      sphereMesh.visible = false;
+      crystalMesh.visible = true;
       particles.visible = true;
-      icoMesh.material.color.setHex(0x06b6d4);
-      coreMesh.material.color.setHex(0x818cf8);
-    } else if (newMode === "particles") {
-      icoMesh.visible = false;
-      coreMesh.visible = true;
-      ring1.visible = false;
-      ring2.visible = false;
+      chromeMaterial.metalness = 0.95;
+      chromeMaterial.roughness = 0.12;
+      chromeMaterial.color.setHex(0x0f172a);
+    } else if (newMode === "quantum") {
+      knotMesh.visible = false;
+      sphereMesh.visible = true;
+      crystalMesh.visible = true;
       particles.visible = true;
-      coreMesh.material.color.setHex(0x22d3ee);
-    } else if (newMode === "shield") {
-      icoMesh.visible = true;
-      coreMesh.visible = true;
-      ring1.visible = true;
-      ring2.visible = true;
+    } else if (newMode === "crystal") {
+      knotMesh.visible = true;
+      sphereMesh.visible = false;
+      crystalMesh.visible = true;
       particles.visible = false;
-      icoMesh.material.color.setHex(0x10b981);
-      coreMesh.material.color.setHex(0x06b6d4);
+      chromeMaterial.metalness = 0.4;
+      chromeMaterial.roughness = 0.05;
+      chromeMaterial.color.setHex(0x38bdf8);
     }
   };
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[480px] rounded-3xl overflow-hidden glass-card border border-zinc-200/80 dark:border-cyan-500/30 shadow-2xl bg-zinc-950/90 select-none group">
+    <div className="relative w-full h-[410px] sm:h-[480px] rounded-3xl overflow-hidden glass-card border border-zinc-200/80 dark:border-cyan-500/40 shadow-2xl bg-zinc-950/95 select-none group">
       {/* Background Cyber Ambient Glows */}
-      <div className="absolute inset-0 cyber-grid opacity-40 pointer-events-none" />
-      <div className="absolute -top-12 -right-12 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 cyber-grid opacity-35 pointer-events-none" />
+      <div className="absolute -top-12 -right-12 w-56 h-56 bg-cyan-500/25 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute -bottom-12 -left-12 w-56 h-56 bg-purple-500/25 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top HUD: Status Bar */}
       <div className="absolute top-3.5 left-4 right-4 z-20 flex items-center justify-between text-xs font-mono pointer-events-none">
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-cyan-400 backdrop-blur-md">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/90 border border-cyan-500/30 text-cyan-400 backdrop-blur-md shadow-lg shadow-cyan-500/10">
           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-          <span className="text-[11px] font-bold">ASTRA 3D ENGINE // ONLINE</span>
+          <span className="text-[11px] font-bold tracking-wider">ASTRA PBR ENGINE // 3D CORE</span>
         </div>
 
         <div className="flex items-center gap-2 pointer-events-auto">
@@ -312,14 +397,14 @@ export default function Astra3DHero() {
           <button
             onClick={handleToggleSound}
             onMouseEnter={playHoverSound}
-            className="p-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800 text-zinc-300 hover:text-cyan-400 transition-colors shadow-xs cursor-pointer"
+            className="p-1.5 rounded-lg bg-zinc-900/90 border border-zinc-800 hover:border-cyan-500/40 text-zinc-300 hover:text-cyan-400 transition-colors shadow-xs cursor-pointer"
             title={soundOn ? "ปิดเสียง Cyber SFX" : "เปิดเสียง Cyber SFX"}
           >
             {soundOn ? <Volume2 size={14} className="text-cyan-400" /> : <VolumeX size={14} className="text-zinc-500" />}
           </button>
 
           {/* FPS Badge */}
-          <div className="px-2.5 py-1 rounded-lg bg-zinc-900/80 border border-zinc-800 text-[10px] text-emerald-400 font-bold backdrop-blur-md">
+          <div className="px-2.5 py-1 rounded-lg bg-zinc-900/90 border border-emerald-500/30 text-[10px] text-emerald-400 font-bold backdrop-blur-md">
             {fps} FPS
           </div>
         </div>
@@ -329,51 +414,51 @@ export default function Astra3DHero() {
       <div
         ref={containerRef}
         className="w-full h-full cursor-grab active:cursor-grabbing touch-none"
-        title="คลิกลากเพื่อหมุนวัตถุ 3D ในทุกมิติ (Click & Drag to rotate)"
+        title="คลิกลากเพื่อหมุน 3D รอบทิศทาง หรือเลื่อนเมาส์เพื่อให้วัตถุเอียงตาม (Mouse Parallax & Drag)"
       />
 
       {/* Bottom Floating Interactive HUD Controls */}
       <div className="absolute bottom-3.5 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-2">
         {/* Interaction Hint */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900/85 border border-zinc-800 text-[10px] font-mono text-zinc-400 backdrop-blur-md pointer-events-none">
-          <Compass size={12} className={isInteracting ? "text-cyan-400 animate-spin" : "text-zinc-500"} />
-          <span>{isInteracting ? "DRAGGING 3D PERSPECTIVE" : "DRAG TO ROTATE 3D MODEL"}</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900/90 border border-zinc-800 text-[10px] font-mono text-zinc-400 backdrop-blur-md pointer-events-none">
+          <Compass size={12} className={isInteracting ? "text-cyan-400 animate-spin" : "text-cyan-400"} />
+          <span>{isInteracting ? "DRAGGING 3D PERSPECTIVE" : "TILT & DRAG 3D MODEL"}</span>
         </div>
 
         {/* 3D Mode Selector Pills */}
-        <div className="flex items-center gap-1.5 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 backdrop-blur-md">
+        <div className="flex items-center gap-1.5 bg-zinc-900/95 p-1 rounded-xl border border-zinc-800/90 backdrop-blur-md shadow-xl">
+          <button
+            onClick={() => switchMode("chrome")}
+            onMouseEnter={playHoverSound}
+            className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer ${
+              mode === "chrome"
+                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/40"
+                : "text-zinc-400 hover:text-white"
+            }`}
+          >
+            Liquid Chrome
+          </button>
           <button
             onClick={() => switchMode("quantum")}
             onMouseEnter={playHoverSound}
             className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer ${
               mode === "quantum"
-                ? "bg-cyan-500 text-white shadow-md shadow-cyan-500/30"
+                ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/40"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
-            Quantum
+            Quantum Orb
           </button>
           <button
-            onClick={() => switchMode("particles")}
+            onClick={() => switchMode("crystal")}
             onMouseEnter={playHoverSound}
             className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer ${
-              mode === "particles"
-                ? "bg-purple-600 text-white shadow-md shadow-purple-500/30"
+              mode === "crystal"
+                ? "bg-gradient-to-r from-sky-400 to-emerald-500 text-white shadow-md shadow-sky-500/40"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
-            Nexus
-          </button>
-          <button
-            onClick={() => switchMode("shield")}
-            onMouseEnter={playHoverSound}
-            className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer ${
-              mode === "shield"
-                ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/30"
-                : "text-zinc-400 hover:text-white"
-            }`}
-          >
-            Shield
+            Prismatic
           </button>
         </div>
       </div>
