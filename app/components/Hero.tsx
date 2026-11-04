@@ -195,7 +195,7 @@ export default function Hero() {
             </div>
 
             {/* Main Greeting & Name */}
-            <div className="space-y-2">
+            <div id="hero-title-zone" className="space-y-2 relative transition-all">
               <p className="text-zinc-500 dark:text-zinc-400 text-sm sm:text-base font-semibold uppercase tracking-wider flex items-center justify-center lg:justify-start gap-2">
                 <Sparkles size={16} className="text-cyan-500" />
                 <span>{t("hero_greeting")}</span>
@@ -208,7 +208,7 @@ export default function Hero() {
               </h1>
 
               {/* Dynamic Animated Rotating Role */}
-              <div className="h-9 flex items-center justify-center lg:justify-start">
+              <div id="hero-role-zone" className="h-9 flex items-center justify-center lg:justify-start">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-blue-50/80 dark:bg-cyan-950/40 border border-blue-200/70 dark:border-cyan-800/60 text-xs sm:text-sm font-bold text-blue-700 dark:text-cyan-300 shadow-xs animate-in fade-in duration-300">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
                   <span>{roles[roleIndex]}</span>
@@ -217,12 +217,12 @@ export default function Hero() {
             </div>
 
             {/* Subtitle */}
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+            <p id="hero-subtitle-zone" className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
               {t("hero_subtitle")}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
+            <div id="hero-cta-zone" className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
               <button
                 onClick={() => handleScroll("#projects")}
                 className="relative group overflow-hidden inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-400 text-white text-sm font-bold shadow-lg shadow-blue-500/25 dark:shadow-cyan-900/50 transition-all duration-300 cursor-pointer active:scale-95"
@@ -296,7 +296,7 @@ export default function Hero() {
           {/* Right Column: Holographic Avatar Bento & Terminal */}
           <div className="lg:col-span-5 w-full max-w-md mx-auto space-y-4">
             {/* Holographic Avatar Bento Card */}
-            <div className="relative group">
+            <div id="hero-bento-zone" className="relative group">
               {/* Animated Rotating Gradient Glow Halo */}
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 rounded-3xl blur-md opacity-35 group-hover:opacity-60 transition duration-500" />
 
@@ -355,7 +355,7 @@ export default function Hero() {
             </div>
 
             {/* Futuristic Terminal Widget with Scanline */}
-            <div className="relative w-full rounded-2xl overflow-hidden glass-card border border-zinc-200/80 dark:border-zinc-800/90 shadow-2xl">
+            <div id="hero-terminal-zone" className="relative w-full rounded-2xl overflow-hidden glass-card border border-zinc-200/80 dark:border-zinc-800/90 shadow-2xl">
               {/* Scanline laser beam effect */}
               <div className="scanline-beam" />
 
