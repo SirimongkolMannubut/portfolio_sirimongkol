@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Mail, Terminal, Shield, Cpu, Code2, FileDown, Sparkles, CheckCircle2, GraduationCap, Briefcase, MapPin, Clock, ExternalLink, Box } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
-import AgentSwarmCanvas from "./AgentSwarmCanvas";
 import { playHoverSound, playClickSound } from "../lib/audio";
 
 // Brand Icons
@@ -161,9 +160,6 @@ export default function Hero() {
       id="home"
       className="relative min-h-[96vh] flex flex-col justify-center pt-28 pb-16 overflow-hidden"
     >
-      {/* Live Autonomous Multi-Agent Swarm Canvas (from Reel @xiaobima___) */}
-      <AgentSwarmCanvas />
-
       {/* Cyber Grid & Ambient Glows */}
       <div className="cyber-grid" />
       <div className="absolute inset-0 pointer-events-none z-0">

@@ -88,8 +88,10 @@ export default function PremiumEffects() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.setAttribute("data-reveal", "in");
             io.unobserve(entry.target);
+            // Let the build-crew cursors claim this element; reveal directly if nobody does
+            const claim = new CustomEvent("build:queue", { detail: entry.target, cancelable: true });
+            if (window.dispatchEvent(claim)) entry.target.setAttribute("data-reveal", "in");
           }
         });
       },

@@ -1,104 +1,250 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Play, Pause, UserPlus, RotateCcw, Sparkles, CheckCircle2 } from "lucide-react";
+import { Play, Pause, RotateCcw, FastForward, Compass, CheckCircle2, X } from "lucide-react";
 import { playHoverSound, playClickSound, playWarpSound } from "../lib/audio";
 
-interface AgentDef {
+interface SectionConfig {
   id: string;
   name: string;
-  tech: string;
-  color: string;
-  targetId: string;
-  actionText: string;
-  typewriterCode: string;
-  desc: string;
+  layersAtEnd: number;
+  agents: {
+    name: string;
+    tech: string;
+    color: string;
+    selector: string;
+    code: string;
+    offsetY: number;
+    offsetX: number;
+  }[];
 }
 
-const AGENT_TASKS: AgentDef[] = [
+const TOUR_SECTIONS: SectionConfig[] = [
   {
-    id: "nextjs",
-    name: "Next.js 16",
-    tech: "React 19 Server Component",
-    color: "#06b6d4", // Cyan
-    targetId: "hero-title-zone",
-    actionText: "render(<HeroHeadline />)",
-    typewriterCode: "const Dev = () => <h1>Sirimongkol</h1>;",
-    desc: "Building App Router Layout & Title",
+    id: "home",
+    name: "01 // HERO ARCHITECTURE",
+    layersAtEnd: 63,
+    agents: [
+      {
+        name: "Next.js 16",
+        tech: "React 19 App Router",
+        color: "#06b6d4",
+        selector: "#hero-title-zone",
+        code: "const Dev = () => <h1>Sirimongkol M.</h1>;",
+        offsetY: -14,
+        offsetX: 16,
+      },
+      {
+        name: "Flutter Dev",
+        tech: "Cross-Platform Mobile",
+        color: "#38bdf8",
+        selector: "#hero-role-zone",
+        code: "RoleBadge(title: 'Flutter Developer')",
+        offsetY: -12,
+        offsetX: 24,
+      },
+      {
+        name: "TypeScript (TS)",
+        tech: "Strict Type System",
+        color: "#3b82f6",
+        selector: "#hero-subtitle-zone",
+        code: "type Stack = ['Next.js 16', 'Flutter', 'TS'];",
+        offsetY: -14,
+        offsetX: 20,
+      },
+      {
+        name: "SysArch @ กยศ.",
+        tech: "Enterprise GovTech",
+        color: "#10b981",
+        selector: "#hero-bento-zone",
+        code: "auth.verify('SLF_Internship', GPA: 3.05);",
+        offsetY: -16,
+        offsetX: 16,
+      },
+      {
+        name: "Terminal Telemetry",
+        tech: "Node.js & zsh Shell",
+        color: "#a855f7",
+        selector: "#hero-terminal-zone",
+        code: "terminal.emit('Sirimongkol.OS [ONLINE]');",
+        offsetY: -14,
+        offsetX: 28,
+      },
+    ],
   },
   {
-    id: "flutter",
-    name: "Flutter & Dart",
-    tech: "Cross-Platform Mobile",
-    color: "#38bdf8", // Sky
-    targetId: "hero-role-zone",
-    actionText: "Widget build(BuildContext context)",
-    typewriterCode: "RoleBadge(role: 'Flutter Developer')",
-    desc: "Compiling Mobile Role Widget",
+    id: "about",
+    name: "02 // ACADEMIC & INTERNSHIP PROFILE",
+    layersAtEnd: 124,
+    agents: [
+      {
+        name: "CS @ Sisaket Rajabhat",
+        tech: "Computer Science (GPA 3.05)",
+        color: "#f59e0b",
+        selector: "#about h2",
+        code: "university.certify('B.Sc. Computer Science');",
+        offsetY: -14,
+        offsetX: 20,
+      },
+      {
+        name: "Student Loan Fund (กยศ.)",
+        tech: "Full-Time Intern 2024-2025",
+        color: "#10b981",
+        selector: "#about .glass-card",
+        code: "govtech.audit('Student Loan Fund Systems');",
+        offsetY: -16,
+        offsetX: 30,
+      },
+      {
+        name: "Figma UI/UX",
+        tech: "Design System & Tokens",
+        color: "#ec4899",
+        selector: "#about",
+        code: "figma.exportTokens({ rounded: '2xl' });",
+        offsetY: 60,
+        offsetX: 80,
+      },
+    ],
   },
   {
-    id: "typescript",
-    name: "TypeScript (TS)",
-    tech: "Strict Type System",
-    color: "#3b82f6", // Blue
-    targetId: "hero-subtitle-zone",
-    actionText: "type Profile = Readonly<Developer>",
-    typewriterCode: "interface SkillStack { frontEnd: true }",
-    desc: "Validating Types & Subtitle",
+    id: "skills",
+    name: "03 // FULL-STACK TECH STACKS",
+    layersAtEnd: 198,
+    agents: [
+      {
+        name: "TypeScript / ES6+",
+        tech: "Modern JavaScript",
+        color: "#3b82f6",
+        selector: "#skills",
+        code: "async function compileStack(): Promise<Dev>",
+        offsetY: 40,
+        offsetX: 30,
+      },
+      {
+        name: "React 19 & Tailwind v4",
+        tech: "High-Performance CSS",
+        color: "#06b6d4",
+        selector: "#skills",
+        code: "@theme { --color-neon: #06b6d4; }",
+        offsetY: 120,
+        offsetX: 140,
+      },
+      {
+        name: "MongoDB Atlas",
+        tech: "NoSQL Cloud Database",
+        color: "#22c55e",
+        selector: "#skills",
+        code: "mongoose.connect(process.env.MONGODB_URI);",
+        offsetY: 180,
+        offsetX: 60,
+      },
+      {
+        name: "Gemini 2.5 AI",
+        tech: "Multimodal AI Co-Pilot",
+        color: "#a855f7",
+        selector: "#skills",
+        code: "ai.generate({ model: 'gemini-2.5-flash' });",
+        offsetY: 80,
+        offsetX: 220,
+      },
+    ],
   },
   {
-    id: "sysarch",
-    name: "SysArch @ กยศ.",
-    tech: "Enterprise Architecture",
-    color: "#10b981", // Emerald
-    targetId: "hero-bento-zone",
-    actionText: "verifyCredentials({ gpa: 3.05, intern: 'กยศ.' })",
-    typewriterCode: "auth.verify('SLF_LoanFund_Internship');",
-    desc: "Locking GPA 3.05 & Internship Credentials",
+    id: "projects",
+    name: "04 // FLAGSHIP AUTOMATION & PROJECTS",
+    layersAtEnd: 295,
+    agents: [
+      {
+        name: "Claude Haiku Vision AI",
+        tech: "Accounting Invoice OCR",
+        color: "#f97316",
+        selector: "#projects",
+        code: "claude.ocr({ extract: ['TaxID', 'VAT_7%'] });",
+        offsetY: 50,
+        offsetX: 40,
+      },
+      {
+        name: "Make.com Automation",
+        tech: "9-Path Multi-Tenant Router",
+        color: "#a855f7",
+        selector: "#projects",
+        code: "make.router.route(10_Clients_Drive_8Folders);",
+        offsetY: 130,
+        offsetX: 120,
+      },
+      {
+        name: "SLF Portal Architect",
+        tech: "Student Loan Fund Management",
+        color: "#10b981",
+        selector: "#projects",
+        code: "deploy(SLF_Portal_Verification_Service);",
+        offsetY: 200,
+        offsetX: 50,
+      },
+      {
+        name: "Google Apps Script",
+        tech: "Google Workspace API",
+        color: "#22c55e",
+        selector: "#projects",
+        code: "DriveApp.getFolderById(TargetFolderId);",
+        offsetY: 90,
+        offsetX: 260,
+      },
+    ],
   },
   {
-    id: "claude",
-    name: "Claude Haiku AI",
-    tech: "Vision OCR & JSON Parsing",
-    color: "#f97316", // Orange
-    targetId: "hero-cta-zone",
-    actionText: "ai.extractTaxInvoice(docStream)",
-    typewriterCode: "model.generateContent({ format: 'json' })",
-    desc: "Integrating Flagship LINE OA AI Pipeline",
+    id: "activities",
+    name: "05 // INTERNSHIP & COMMUNITY IMPACT",
+    layersAtEnd: 342,
+    agents: [
+      {
+        name: "GovTech Architect @ กยศ.",
+        tech: "Public Sector Experience",
+        color: "#10b981",
+        selector: "#activities",
+        code: "org.certify('Student Loan Fund Internship');",
+        offsetY: 60,
+        offsetX: 40,
+      },
+      {
+        name: "Charity Platform Lead",
+        tech: "Sisaket Rajabhat Hackathon",
+        color: "#38bdf8",
+        selector: "#activities",
+        code: "deploy(Sisaket_Charity_Web_Platform);",
+        offsetY: 140,
+        offsetX: 160,
+      },
+    ],
   },
   {
-    id: "make",
-    name: "Make.com Automation",
-    tech: "Multi-Tenant Webhook Routing",
-    color: "#a855f7", // Purple
-    targetId: "hero-cta-zone",
-    actionText: "router.dispatch('9-Path Folder Route')",
-    typewriterCode: "webhook.onReceive(10_Companies_Drive);",
-    desc: "Connecting 9-Path Automation Router",
-  },
-  {
-    id: "mongodb",
-    name: "Node.js & MongoDB",
-    tech: "Full-Stack Data Storage",
-    color: "#22c55e", // Green
-    targetId: "hero-terminal-zone",
-    actionText: "db.connect('sirimongkol_os_cluster')",
-    typewriterCode: "collection.log('Sirimongkol.OS [ONLINE]');",
-    desc: "Streaming Terminal Telemetry Logs",
-  },
-  {
-    id: "tailwind",
-    name: "Tailwind CSS v4",
-    tech: "Glassmorphic Cyber Grid",
-    color: "#eab308", // Yellow
-    targetId: "hero-bento-zone",
-    actionText: "apply('glass-card border-cyan-500/30')",
-    typewriterCode: "shadow: 0_0_25px_rgba(6,182,212,0.3);",
-    desc: "Styling Holographic Conic Glow Ring",
+    id: "contact",
+    name: "06 // SECURE PRODUCTION DEPLOY",
+    layersAtEnd: 381,
+    agents: [
+      {
+        name: "API Gateway (SMTP)",
+        tech: "Direct Contact Channel",
+        color: "#06b6d4",
+        selector: "#contact",
+        code: "mail.send({ to: 'topt75870@gmail.com' });",
+        offsetY: 50,
+        offsetX: 40,
+      },
+      {
+        name: "SSL & Security Audit",
+        tech: "Zero Trust Protection",
+        color: "#10b981",
+        selector: "#contact",
+        code: "security.enforce('SSL_TLS_v1.3_ENCRYPTED');",
+        offsetY: 130,
+        offsetX: 180,
+      },
+    ],
   },
 ];
 
-interface LiveAgentState {
+interface LiveAgent {
   id: string;
   name: string;
   tech: string;
@@ -112,166 +258,159 @@ interface LiveAgentState {
   boxWidth: number;
   boxHeight: number;
   boxVisible: boolean;
-  actionText: string;
   typedCode: string;
-  status: "idle" | "moving" | "targeting" | "building" | "completed";
 }
 
 export default function AgentSwarmCanvas() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isActive, setIsActive] = useState<boolean>(true);
+  const [isTourActive, setIsTourActive] = useState<boolean>(false);
+  const [tourStep, setTourStep] = useState<number>(0);
   const [speedMultiplier, setSpeedMultiplier] = useState<number>(1);
-  const [layersCount, setLayersCount] = useState<number>(12);
-  const totalLayers = 128;
-  const [buildStep, setBuildStep] = useState<number>(0);
-  const [agents, setAgents] = useState<LiveAgentState[]>([]);
-  const [activeRipple, setActiveRipple] = useState<{ x: number; y: number; color: string } | null>(null);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
+  const [layersCount, setLayersCount] = useState<number>(48);
+  const [agents, setAgents] = useState<LiveAgent[]>([]);
+  const [tourProgress, setTourProgress] = useState<number>(0);
+  const tourTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize Swarm Positions
-  const resetSwarm = useCallback(() => {
-    playWarpSound();
-    setLayersCount(18);
-    setBuildStep(0);
+  // Detect current visible section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const vh = window.innerHeight;
 
-    const initial = AGENT_TASKS.map((task, idx) => ({
-      id: task.id,
-      name: task.name,
-      tech: task.tech,
-      color: task.color,
-      x: 80 + (idx % 4) * 220 + (Math.random() - 0.5) * 50,
-      y: 60 + Math.floor(idx / 4) * 200 + (Math.random() - 0.5) * 40,
-      targetX: 100,
-      targetY: 100,
-      boxX: 0,
-      boxY: 0,
-      boxWidth: 0,
-      boxHeight: 0,
-      boxVisible: false,
-      actionText: task.actionText,
-      typedCode: "",
-      status: "idle" as const,
-    }));
-    setAgents(initial);
+      TOUR_SECTIONS.forEach((sec, idx) => {
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= vh * 0.4 && rect.bottom >= vh * 0.2) {
+            setCurrentSectionIndex(idx);
+          }
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Update Agent Positions based on active section
   useEffect(() => {
-    resetSwarm();
-  }, [resetSwarm]);
+    const currentSec = TOUR_SECTIONS[currentSectionIndex] || TOUR_SECTIONS[0];
+    setLayersCount(currentSec.layersAtEnd);
 
-  // Main Choreography Animation Loop
+    const newAgents: LiveAgent[] = currentSec.agents.map((agentDef, idx) => {
+      let targetX = 100 + (idx % 3) * 280;
+      let targetY = 120 + Math.floor(idx / 3) * 160;
+      let boxX = targetX - 10;
+      let boxY = targetY - 10;
+      let boxWidth = 240;
+      let boxHeight = 60;
+      let boxVisible = true;
+
+      // Find actual element on page if available
+      const targetElement = document.querySelector(agentDef.selector);
+      if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+        targetX = Math.max(30, rect.left + agentDef.offsetX);
+        targetY = Math.max(80, rect.top + agentDef.offsetY);
+        boxX = rect.left;
+        boxY = rect.top;
+        boxWidth = Math.min(window.innerWidth - rect.left - 20, rect.width);
+        boxHeight = rect.height;
+      }
+
+      return {
+        id: `${currentSec.id}-${idx}`,
+        name: agentDef.name,
+        tech: agentDef.tech,
+        color: agentDef.color,
+        x: targetX + (Math.random() - 0.5) * 60,
+        y: targetY + (Math.random() - 0.5) * 40,
+        targetX,
+        targetY,
+        boxX,
+        boxY,
+        boxWidth,
+        boxHeight,
+        boxVisible,
+        typedCode: agentDef.code,
+      };
+    });
+
+    setAgents(newAgents);
+  }, [currentSectionIndex]);
+
+  // Smooth Motion Loop
   useEffect(() => {
-    if (!isActive) return;
-
     let frameId: number;
     let tick = 0;
 
-    const runLoop = () => {
-      frameId = requestAnimationFrame(runLoop);
+    const animateLoop = () => {
+      frameId = requestAnimationFrame(animateLoop);
       tick++;
 
-      const container = containerRef.current;
-      if (!container) return;
+      setAgents((prev) =>
+        prev.map((agent) => {
+          // Slight natural hover jitter
+          const jitterX = Math.sin(tick * 0.04) * 2;
+          const jitterY = Math.cos(tick * 0.04) * 2;
 
-      const containerRect = container.getBoundingClientRect();
-
-      setAgents((prevAgents) =>
-        prevAgents.map((agent, idx) => {
-          const task = AGENT_TASKS[idx];
-          const targetEl = document.getElementById(task.targetId);
-
-          let destX = agent.targetX;
-          let destY = agent.targetY;
-          let boxX = agent.boxX;
-          let boxY = agent.boxY;
-          let boxWidth = agent.boxWidth;
-          let boxHeight = agent.boxHeight;
-          let boxVisible = agent.boxVisible;
-          let actionText = agent.actionText;
-          let typedCode = agent.typedCode;
-          let status = agent.status;
-
-          if (targetEl) {
-            const rect = targetEl.getBoundingClientRect();
-            // Relative to container
-            const relX = rect.left - containerRect.left;
-            const relY = rect.top - containerRect.top;
-
-            // Agent target is slightly offset to top-left of the element
-            destX = relX + (idx % 2 === 0 ? 12 : rect.width - 30);
-            destY = relY - 18;
-
-            boxX = relX;
-            boxY = relY;
-            boxWidth = rect.width;
-            boxHeight = rect.height;
-            boxVisible = true;
-
-            // Calculate progress of typewriter
-            const fullText = task.typewriterCode;
-            const typeIndex = Math.floor((tick * 0.4 * speedMultiplier + idx * 5) % (fullText.length + 15));
-            typedCode = fullText.slice(0, Math.min(typeIndex, fullText.length));
-
-            if (typeIndex >= fullText.length && typeIndex <= fullText.length + 2 && tick % 40 === 0) {
-              status = "completed";
-            } else {
-              status = "building";
-            }
-          } else {
-            // Ambient roam
-            destX = 100 + Math.sin(tick * 0.02 + idx) * 350 + (idx % 3) * 200;
-            destY = 120 + Math.cos(tick * 0.02 + idx) * 150 + Math.floor(idx / 3) * 120;
-            boxVisible = false;
-          }
-
-          // Smooth lerp movement with spring damp
-          const lerpFactor = 0.045 * speedMultiplier;
-          const newX = agent.x + (destX - agent.x) * lerpFactor;
-          const newY = agent.y + (destY - agent.y) * lerpFactor;
+          const dx = agent.targetX + jitterX - agent.x;
+          const dy = agent.targetY + jitterY - agent.y;
 
           return {
             ...agent,
-            x: newX,
-            y: newY,
-            targetX: destX,
-            targetY: destY,
-            boxX,
-            boxY,
-            boxWidth,
-            boxHeight,
-            boxVisible,
-            actionText,
-            typedCode,
-            status,
+            x: agent.x + dx * 0.08 * speedMultiplier,
+            y: agent.y + dy * 0.08 * speedMultiplier,
           };
         })
       );
-
-      // Periodically trigger a click ripple on an element
-      if (tick % 75 === 0 && agents.length > 0) {
-        const randomAgent = agents[Math.floor(Math.random() * agents.length)];
-        setActiveRipple({ x: randomAgent.x, y: randomAgent.y, color: randomAgent.color });
-      }
-
-      // Layer assembling counter
-      if (tick % 50 === 0) {
-        setLayersCount((prev) => (prev >= totalLayers ? 18 : prev + 1));
-      }
     };
 
-    frameId = requestAnimationFrame(runLoop);
+    frameId = requestAnimationFrame(animateLoop);
     return () => cancelAnimationFrame(frameId);
-  }, [isActive, speedMultiplier, agents.length]);
+  }, [speedMultiplier]);
 
-  // Click handler to spawn a custom quick cursor
-  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
+  // Autopilot Guided Tour Function (Smoothly scrolls section to section like in Reel 2)
+  const startTour = useCallback(() => {
+    playWarpSound();
+    setIsTourActive(true);
+    setTourStep(0);
 
-    setActiveRipple({ x: clickX, y: clickY, color: "#38bdf8" });
+    let step = 0;
+    const runTourStep = () => {
+      if (step >= TOUR_SECTIONS.length) {
+        setIsTourActive(false);
+        return;
+      }
+
+      const sec = TOUR_SECTIONS[step];
+      const el = document.getElementById(sec.id);
+      if (el) {
+        const offset = 80;
+        const targetPos = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({
+          top: targetPos,
+          behavior: "smooth",
+        });
+      }
+
+      setCurrentSectionIndex(step);
+      setTourStep(step);
+      setTourProgress(Math.round(((step + 1) / TOUR_SECTIONS.length) * 100));
+      step++;
+
+      // Tour advances every 4.8 seconds / speedMultiplier
+      tourTimerRef.current = setTimeout(runTourStep, 4800 / speedMultiplier);
+    };
+
+    runTourStep();
+  }, [speedMultiplier]);
+
+  const pauseTour = () => {
     playClickSound();
+    if (tourTimerRef.current) clearTimeout(tourTimerRef.current);
+    setIsTourActive(false);
   };
 
   const cycleSpeed = () => {
@@ -280,17 +419,13 @@ export default function AgentSwarmCanvas() {
   };
 
   return (
-    <div
-      ref={containerRef}
-      onClick={handleContainerClick}
-      className="absolute inset-0 pointer-events-none z-30 overflow-hidden select-none"
-    >
+    <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden select-none">
       {/* 1. CAD Guide Lines & Selection Bounding Boxes */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none">
         {agents.map((agent) => {
-          if (!agent.boxVisible) return null;
+          if (!agent.boxVisible || agent.boxWidth <= 0) return null;
           return (
-            <g key={`guide-${agent.id}`} className="transition-all duration-300">
+            <g key={`box-${agent.id}`} className="transition-all duration-300">
               {/* Full-width Horizontal Alignment Laser Line */}
               <line
                 x1={0}
@@ -300,7 +435,7 @@ export default function AgentSwarmCanvas() {
                 stroke={agent.color}
                 strokeWidth="1"
                 strokeDasharray="4 4"
-                opacity="0.3"
+                opacity="0.35"
               />
               {/* Full-height Vertical Alignment Laser Line */}
               <line
@@ -311,27 +446,27 @@ export default function AgentSwarmCanvas() {
                 stroke={agent.color}
                 strokeWidth="1"
                 strokeDasharray="4 4"
-                opacity="0.3"
+                opacity="0.35"
               />
 
               {/* Exact Bounding Selection Rectangle */}
               <rect
-                x={agent.boxX - 6}
-                y={agent.boxY - 6}
-                width={agent.boxWidth + 12}
-                height={agent.boxHeight + 12}
+                x={agent.boxX - 4}
+                y={agent.boxY - 4}
+                width={agent.boxWidth + 8}
+                height={agent.boxHeight + 8}
                 fill={agent.color}
                 fillOpacity="0.05"
                 stroke={agent.color}
                 strokeWidth="1.5"
-                strokeDasharray="5 5"
-                rx="12"
+                strokeDasharray="6 6"
+                rx="10"
               />
 
-              {/* Four Corner CAD Resize Grips */}
+              {/* Corner Grips */}
               <rect
-                x={agent.boxX - 9}
-                y={agent.boxY - 9}
+                x={agent.boxX - 7}
+                y={agent.boxY - 7}
                 width="6"
                 height="6"
                 fill="white"
@@ -339,8 +474,8 @@ export default function AgentSwarmCanvas() {
                 strokeWidth="1.5"
               />
               <rect
-                x={agent.boxX + agent.boxWidth + 3}
-                y={agent.boxY - 9}
+                x={agent.boxX + agent.boxWidth + 1}
+                y={agent.boxY - 7}
                 width="6"
                 height="6"
                 fill="white"
@@ -348,8 +483,8 @@ export default function AgentSwarmCanvas() {
                 strokeWidth="1.5"
               />
               <rect
-                x={agent.boxX - 9}
-                y={agent.boxY + agent.boxHeight + 3}
+                x={agent.boxX - 7}
+                y={agent.boxY + agent.boxHeight + 1}
                 width="6"
                 height="6"
                 fill="white"
@@ -357,8 +492,8 @@ export default function AgentSwarmCanvas() {
                 strokeWidth="1.5"
               />
               <rect
-                x={agent.boxX + agent.boxWidth + 3}
-                y={agent.boxY + agent.boxHeight + 3}
+                x={agent.boxX + agent.boxWidth + 1}
+                y={agent.boxY + agent.boxHeight + 1}
                 width="6"
                 height="6"
                 fill="white"
@@ -367,7 +502,7 @@ export default function AgentSwarmCanvas() {
               />
 
               {/* CAD Dimension & Component Tag */}
-              <g transform={`translate(${agent.boxX}, ${agent.boxY - 14})`}>
+              <g transform={`translate(${agent.boxX}, ${agent.boxY - 12})`}>
                 <rect
                   x="-2"
                   y="-10"
@@ -377,7 +512,7 @@ export default function AgentSwarmCanvas() {
                   stroke={agent.color}
                   strokeWidth="1"
                   rx="4"
-                  opacity="0.9"
+                  opacity="0.95"
                 />
                 <text
                   x="4"
@@ -395,20 +530,7 @@ export default function AgentSwarmCanvas() {
         })}
       </svg>
 
-      {/* 2. Expanding Click Ripple Effect */}
-      {activeRipple && (
-        <div
-          key={`${activeRipple.x}-${activeRipple.y}`}
-          className="absolute w-8 h-8 rounded-full border-2 animate-ping pointer-events-none"
-          style={{
-            left: activeRipple.x - 16,
-            top: activeRipple.y - 16,
-            borderColor: activeRipple.color,
-          }}
-        />
-      )}
-
-      {/* 3. Multiplayer AI Agent Cursors with Exact Language & Typing Bar */}
+      {/* 2. Multiplayer AI Agent Cursors with Exact Language & Typing Bar */}
       {agents.map((agent) => (
         <div
           key={agent.id}
@@ -417,7 +539,7 @@ export default function AgentSwarmCanvas() {
             transform: `translate3d(${agent.x}px, ${agent.y}px, 0)`,
           }}
         >
-          {/* Cursor Pointer (Figma/macOS Style) */}
+          {/* Cursor Pointer */}
           <div className="relative">
             <svg
               width="22"
@@ -426,7 +548,7 @@ export default function AgentSwarmCanvas() {
               fill={agent.color}
               stroke="white"
               strokeWidth="1.5"
-              className="filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+              className="filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]"
             >
               <path d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.36z" />
             </svg>
@@ -440,23 +562,22 @@ export default function AgentSwarmCanvas() {
 
           {/* Agent Spec Badge (Name + Tech Language + Live Typing) */}
           <div className="ml-4 -mt-2 space-y-1">
-            {/* Primary Name Badge */}
             <div
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold text-white shadow-xl whitespace-nowrap backdrop-blur-md border border-white/20"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold text-white shadow-2xl whitespace-nowrap backdrop-blur-md border border-white/20"
               style={{
                 backgroundColor: agent.color,
               }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               <span>{agent.name}</span>
-              <span className="text-[9px] px-1 py-0.2 rounded-md bg-black/30 font-mono text-zinc-100">
+              <span className="text-[9px] px-1 py-0.2 rounded-md bg-black/35 font-mono text-zinc-100">
                 {agent.tech}
               </span>
             </div>
 
-            {/* Live Typing / Construction Code Pill */}
+            {/* Live Typing Code Pill */}
             {agent.typedCode && (
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-zinc-950/90 border border-zinc-700/80 text-[9px] font-mono text-zinc-200 shadow-xl backdrop-blur-md max-w-xs truncate">
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-zinc-950/95 border border-zinc-700/80 text-[9px] font-mono text-zinc-200 shadow-2xl backdrop-blur-md max-w-sm truncate">
                 <span className="text-cyan-400 font-bold">⚡</span>
                 <span className="text-zinc-300 truncate">{agent.typedCode}</span>
                 <span className="w-1 h-3 bg-cyan-400 cursor-blink inline-block" />
@@ -466,65 +587,78 @@ export default function AgentSwarmCanvas() {
         </div>
       ))}
 
-      {/* 4. Floating Bottom Swarm Control HUD (The Viral Instagram Reel Bar) */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center gap-2 p-1.5 rounded-full bg-zinc-950/95 border border-cyan-500/30 shadow-[0_10px_35px_rgba(0,0,0,0.8)] backdrop-blur-2xl text-xs font-mono text-zinc-200">
+      {/* 3. Floating Bottom Tour Control HUD (Signature Reel 2 Bar) */}
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-auto flex items-center gap-2 p-1.5 rounded-full bg-zinc-950/95 border border-cyan-500/40 shadow-[0_12px_45px_rgba(0,0,0,0.85)] backdrop-blur-2xl text-xs font-mono text-zinc-200">
         {/* Status Indicator */}
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/90 border border-zinc-800">
           <span className="relative flex h-2 w-2">
             <span
               className={`animate-ping absolute inline-flex h-full w-full rounded-full ${
-                isActive ? "bg-emerald-400" : "bg-amber-400"
+                isTourActive ? "bg-emerald-400" : "bg-cyan-400"
               } opacity-75`}
             />
             <span
               className={`relative inline-flex rounded-full h-2 w-2 ${
-                isActive ? "bg-emerald-500" : "bg-amber-500"
+                isTourActive ? "bg-emerald-500" : "bg-cyan-500"
               }`}
             />
           </span>
           <span className="font-bold text-zinc-200 tracking-wider">
-            {agents.length} AGENTS COMPILING
+            {TOUR_SECTIONS[currentSectionIndex]?.name || "SWARM ENGINE"}
           </span>
         </div>
 
         {/* Layer Count */}
-        <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] text-zinc-400">
+        <div className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] text-zinc-400">
           <span className="text-cyan-400 font-bold">{layersCount}</span>
-          <span>/ {totalLayers} LAYERS SYNCED</span>
+          <span>/ 381 LAYERS</span>
         </div>
 
-        {/* Speed Multiplier Button */}
+        {/* Speed Toggle */}
         <button
           onClick={cycleSpeed}
           onMouseEnter={playHoverSound}
           className="px-2.5 py-1 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold text-cyan-400 transition-colors cursor-pointer"
-          title="ปรับความเร็วการจำลอง Swarm"
+          title="ปรับความเร็วการจำลอง Tour"
         >
-          {speedMultiplier}x SPEED
+          {speedMultiplier}x
         </button>
 
-        {/* Rebuild Sequence Button */}
-        <button
-          onClick={resetSwarm}
-          onMouseEnter={playHoverSound}
-          className="px-2.5 py-1 rounded-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-[11px] font-bold text-cyan-300 transition-colors cursor-pointer flex items-center gap-1"
-          title="รันการประกอบ UI สดใหม่อีกครั้ง (Rebuild Swarm)"
-        >
-          <RotateCcw size={11} />
-          <span>REBUILD</span>
-        </button>
+        {/* Tour Start / Pause Button */}
+        {isTourActive ? (
+          <button
+            onClick={pauseTour}
+            onMouseEnter={playHoverSound}
+            className="px-3 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-[11px] font-bold text-amber-300 transition-colors cursor-pointer flex items-center gap-1"
+            title="หยุด Tour ชั่วคราว"
+          >
+            <Pause size={11} />
+            <span>PAUSE TOUR</span>
+          </button>
+        ) : (
+          <button
+            onClick={startTour}
+            onMouseEnter={playHoverSound}
+            className="px-3.5 py-1 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-[11px] shadow-lg shadow-cyan-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+            title="เริ่มทัวร์ทั้งเว็บไซต์แบบในคลิป Instagram"
+          >
+            <Compass size={12} className="animate-spin" />
+            <span>TOUR WEBSITE</span>
+          </button>
+        )}
 
-        {/* Pause/Play Toggle */}
+        {/* Replay Button */}
         <button
           onClick={() => {
             playClickSound();
-            setIsActive(!isActive);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            startTour();
           }}
           onMouseEnter={playHoverSound}
           className="p-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition-colors cursor-pointer"
-          title={isActive ? "พัก Swarm ชั่วคราว" : "เล่น Swarm ต่อ"}
+          title="กลับไปเริ่มต้นทัวร์ตั้งแต่หน้าแรก"
         >
-          {isActive ? <Pause size={13} /> : <Play size={13} />}
+          <RotateCcw size={13} />
         </button>
       </div>
     </div>

@@ -9,12 +9,16 @@ import Contact from "./components/Contact";
 import AIChatbot from "./components/AIChatbot";
 import InteractiveBackground from "./components/InteractiveBackground";
 import PremiumEffects from "./components/PremiumEffects";
+import AgentSwarmCanvas from "./components/AgentSwarmCanvas";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300 flex flex-col relative overflow-x-hidden">
       {/* Intro, aurora, grain, scroll progress, cursor aura, reveal */}
       <PremiumEffects />
+
+      {/* Autonomous Multi-Agent Swarm with Full-Site Guided Tour (from Reel @xiaobima___) */}
+      <AgentSwarmCanvas />
 
       {/* Interactive Cyber Particle Background */}
       <InteractiveBackground />
