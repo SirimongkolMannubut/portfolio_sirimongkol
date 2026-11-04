@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { ArrowRight, Mail, Terminal, Shield, Cpu, Code2, FileDown, Sparkles, CheckCircle2, GraduationCap, Briefcase, MapPin, Clock, ExternalLink, Box } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import Astra3DHero from "./Astra3DHero";
+import HeroLogo3D from "./HeroLogo3D";
+import AgentSwarmCanvas from "./AgentSwarmCanvas";
 import { playHoverSound, playClickSound } from "../lib/audio";
 
 // Brand Icons
@@ -162,6 +164,9 @@ export default function Hero() {
       id="home"
       className="relative min-h-[96vh] flex flex-col justify-center pt-28 pb-16 overflow-hidden"
     >
+      {/* Live Autonomous Multi-Agent Swarm Canvas (from Reel @xiaobima___) */}
+      <AgentSwarmCanvas />
+
       {/* Cyber Grid & Ambient Glows */}
       <div className="cyber-grid" />
       <div className="absolute inset-0 pointer-events-none z-0">
@@ -333,10 +338,10 @@ export default function Hero() {
               </button>
             </div>
 
-            {/* TAB 1: 3D SPATIAL ENGINE (Instagram @ngocbuildswebsites Astra 3D Style) */}
+            {/* TAB 1: 3D SPATIAL RIBBON SCULPTURE (From Reel @xiaobima___ Ignitron 3D) */}
             {heroRightTab === "3d" ? (
               <div className="space-y-3 animate-fadeIn">
-                <Astra3DHero />
+                <HeroLogo3D />
 
                 {/* Sub-card quick info */}
                 <div className="glass-card px-4 py-3 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 flex items-center justify-between text-xs backdrop-blur-md">
