@@ -1,9 +1,10 @@
 "use client";
 
-import { Award, BookOpen, Heart, Languages, Camera, Trash2, MessageCircle, Mail } from "lucide-react";
+import { Award, BookOpen, Heart, Languages, Sparkles, GraduationCap, CheckCircle2, Zap, Users, Lightbulb, TrendingUp, ShieldCheck } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
-// Custom SVG Icons for Brands
+// Brand Icons
 const GithubIcon = ({ size = 16, className = "" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -39,11 +40,8 @@ const FacebookIcon = ({ size = 16, className = "" }) => (
   </svg>
 );
 
-import { useLanguage } from "../context/LanguageContext";
-
 export default function About() {
   const { t, lang } = useLanguage();
-  const [imgError, setImgError] = useState(false);
   const [profileData, setProfileData] = useState<{
     name: string;
     title: string;
@@ -55,23 +53,24 @@ export default function About() {
     interests: string[];
   }>({
     name: "ศิริมงคล มนุบุตร",
-    title: "Computer Science Student · Developer",
-    bio: "นักศึกษาสาขาวิทยาการคอมพิวเตอร์ที่มุ่งมั่นในการพัฒนา Web Application และเทคโนโลยี AI มีประสบการณ์ในการพัฒนาระบบ Full-Stack ทั้งฝั่ง Front-end และ Back-end รวมถึงการออกแบบฐานข้อมูลและการประยุกต์ใช้ AI ในงานจริง พร้อมเปิดรับความรู้และความท้าทายใหม่ ๆ เพื่อพัฒนาศักยภาพในการเป็น Software Developer ในอนาคต",
+    title: "Front-end & Mobile Developer",
+    bio: "นักศึกษาสาขาวิทยาการคอมพิวเตอร์ที่มุ่งมั่นในการพัฒนา Web Application และ Mobile Application มีประสบการณ์พัฒนาจริงด้วย Next.js, Flutter, Tailwind CSS, และ MongoDB/MySQL รวมถึงการออกแบบ UI/UX ผ่าน Figma และการประยุกต์ใช้ AI ในโปรเจกต์จริง พร้อมเปิดรับความรู้และความท้าทายใหม่ ๆ เพื่อร่วมสร้างสรรค์ซอฟต์แวร์คุณภาพ",
     university: "มหาวิทยาลัยราชภัฏศรีสะเกษ",
     faculty: "วิทยาศาสตรบัณฑิต สาขาวิทยาการคอมพิวเตอร์",
     gpa: 3.05,
-    profileImage: "",
+    profileImage: "/profile.jpg",
     interests: [
       "Web Application Development",
+      "Mobile App (Flutter)",
       "AI & Machine Learning",
-      "UI/UX Design",
+      "UI/UX Design & Prototyping",
       "Database Architecture",
+      "Cloud & IT Support",
     ],
   });
 
   useEffect(() => {
-    const apiUrl = "/api";
-    fetch(`${apiUrl}/profile`)
+    fetch("/api/profile")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
@@ -80,19 +79,21 @@ export default function About() {
         if (data && data.name) {
           setProfileData({
             name: data.name || "ศิริมงคล มนุบุตร",
-            title: data.title || "Computer Science Student · Developer",
+            title: data.title || "Front-end & Mobile Developer",
             bio: data.bio || "",
             university: data.university || "มหาวิทยาลัยราชภัฏศรีสะเกษ",
             faculty: data.faculty || "วิทยาศาสตรบัณฑิต สาขาวิทยาการคอมพิวเตอร์",
             gpa: data.gpa || 3.05,
-            profileImage: data.profileImage || "",
+            profileImage: data.profileImage || "/profile.jpg",
             interests: Array.isArray(data.interests) && data.interests.length > 0
               ? data.interests
               : [
                   "Web Application Development",
+                  "Mobile App (Flutter)",
                   "AI & Machine Learning",
-                  "UI/UX Design",
+                  "UI/UX Design & Prototyping",
                   "Database Architecture",
+                  "Cloud & IT Support",
                 ],
           });
         }
@@ -100,152 +101,222 @@ export default function About() {
       .catch(() => {});
   }, []);
 
+  const strengths = [
+    {
+      title: t("strength_fast_learner"),
+      icon: <Zap size={18} className="text-amber-500" />,
+      bg: "bg-amber-50 dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/40",
+    },
+    {
+      title: t("strength_responsibility"),
+      icon: <ShieldCheck size={18} className="text-blue-500" />,
+      bg: "bg-blue-50 dark:bg-blue-950/20 border-blue-200/50 dark:border-blue-800/40",
+    },
+    {
+      title: t("strength_teamwork"),
+      icon: <Users size={18} className="text-emerald-500" />,
+      bg: "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200/50 dark:border-emerald-800/40",
+    },
+    {
+      title: t("strength_problem_solving"),
+      icon: <Lightbulb size={18} className="text-purple-500" />,
+      bg: "bg-purple-50 dark:bg-purple-950/20 border-purple-200/50 dark:border-purple-800/40",
+    },
+    {
+      title: t("strength_growth_mindset"),
+      icon: <TrendingUp size={18} className="text-cyan-500" />,
+      bg: "bg-cyan-50 dark:bg-cyan-950/20 border-cyan-200/50 dark:border-cyan-800/40",
+    },
+  ];
+
   return (
-    <section id="about" className="py-20 relative bg-zinc-550/5 dark:bg-zinc-950/20 overflow-hidden">
-      {/* Background element */}
-      <div className="absolute top-[30%] right-[-10%] w-72 h-72 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <section id="about" className="py-24 relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute top-[25%] right-[-8%] w-96 h-96 bg-blue-500/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[20%] left-[-8%] w-96 h-96 bg-indigo-500/10 rounded-full blur-[130px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Heading */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400 bg-blue-50/80 dark:bg-cyan-950/40 px-3.5 py-1 rounded-full border border-blue-200/60 dark:border-cyan-800/50">
+            DISCOVER MY JOURNEY
+          </span>
+          <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-5xl mt-3">
             {t("about_title")}
           </h2>
-          <div className="h-1 w-20 bg-blue-600 dark:bg-cyan-500 mx-auto mt-4 rounded-full shadow-[0_0_8px_var(--neon-cyan)]" />
+          <div className="h-1 w-24 bg-gradient-to-r from-blue-600 via-cyan-400 to-indigo-600 mx-auto mt-4 rounded-full shadow-[0_0_10px_var(--neon-cyan)]" />
+          <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-lg mx-auto text-sm sm:text-base font-medium">
+            {t("about_subtitle")}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
-          {/* Profile Photo / Avatar (Read-Only from Backend API) */}
-          <div className="flex flex-col items-center">
-            <div
-              className="relative w-64 h-64 rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-zinc-800 bg-gradient-to-tr from-blue-500 via-indigo-650 to-cyan-500 dark:from-cyan-500 dark:via-indigo-600 dark:to-violet-500 flex items-center justify-center"
-            >
-              {profileData.profileImage && !imgError ? (
-                <img
-                  src={profileData.profileImage}
-                  alt={profileData.name}
-                  className="w-full h-full object-cover"
-                  onError={() => setImgError(true)}
-                />
-              ) : (
-                <div className="text-center text-white p-6">
-                  <div className="text-5xl font-black mb-2 tracking-wide">SM</div>
-                  <div className="text-xs opacity-75">{profileData.name}</div>
+        {/* Content Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Portrait Card & Social Links */}
+          <div className="lg:col-span-4 flex flex-col items-center">
+            <div className="glass-card p-6 rounded-3xl w-full flex flex-col items-center border border-zinc-200/70 dark:border-zinc-800/80 shadow-xl">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 rounded-3xl blur opacity-30 group-hover:opacity-75 transition duration-500" />
+                <div className="relative w-52 h-52 sm:w-60 sm:h-60 rounded-3xl overflow-hidden border-2 border-white dark:border-zinc-800 bg-zinc-900 shadow-2xl">
+                  <img
+                    src={profileData.profileImage || "/profile.jpg"}
+                    alt={profileData.name}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/profile.jpg";
+                    }}
+                  />
                 </div>
-              )}
-            </div>
-            
-            <div className="mt-5 text-center flex flex-col items-center">
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">{t("about_name")}</h3>
-              <p className="text-sm font-medium text-zinc-400 dark:text-cyan-400 mt-1 uppercase tracking-wider">{t("about_role_title")}</p>
-              
-              {/* Quick social links under the title */}
-              <div className="mt-5 flex flex-col gap-2.5 w-full max-w-[240px] text-left">
-                {/* GitHub */}
+              </div>
+
+              <div className="mt-5 text-center">
+                <h3 className="text-xl font-black text-zinc-900 dark:text-white">
+                  {lang === "th" && profileData.name ? profileData.name : t("about_name")}
+                </h3>
+                <p className="text-xs font-bold text-blue-600 dark:text-cyan-400 mt-1 uppercase tracking-wider">
+                  {lang === "th" && profileData.title ? profileData.title : t("about_role_title")}
+                </p>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 mt-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Available for Work / Internship
+                </div>
+              </div>
+
+              {/* Quick Contact Buttons */}
+              <div className="mt-6 flex flex-col gap-2.5 w-full text-left">
                 <a
                   href="https://github.com/SirimongkolMannubut"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-100/50 hover:bg-zinc-200/50 dark:bg-zinc-900/40 dark:hover:bg-zinc-900/80 border border-zinc-200/30 dark:border-zinc-800/50 text-xs font-semibold text-zinc-700 dark:text-zinc-300 transition-all duration-300"
+                  className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900/60 dark:hover:bg-zinc-900 text-xs font-semibold text-zinc-800 dark:text-zinc-200 transition-all duration-300 group"
                 >
-                  <GithubIcon size={16} className="text-zinc-800 dark:text-zinc-200" />
-                  <span className="truncate">GitHub Profile</span>
+                  <span className="flex items-center gap-2.5">
+                    <GithubIcon size={16} />
+                    GitHub Profile
+                  </span>
+                  <span className="text-zinc-400 group-hover:translate-x-0.5 transition-transform">→</span>
                 </a>
-                {/* Facebook */}
+
                 <a
                   href="https://www.facebook.com/sirimongkol.manubut.577/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-100/50 hover:bg-zinc-200/50 dark:bg-zinc-900/40 dark:hover:bg-zinc-900/80 border border-zinc-200/30 dark:border-zinc-800/50 text-xs font-semibold text-zinc-700 dark:text-zinc-300 transition-all duration-300"
+                  className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900/60 dark:hover:bg-zinc-900 text-xs font-semibold text-zinc-800 dark:text-zinc-200 transition-all duration-300 group"
                 >
-                  <FacebookIcon size={16} className="text-blue-600 dark:text-blue-400" />
-                  <span className="truncate">Facebook Profile</span>
+                  <span className="flex items-center gap-2.5">
+                    <FacebookIcon size={16} />
+                    Facebook Profile
+                  </span>
+                  <span className="text-zinc-400 group-hover:translate-x-0.5 transition-transform">→</span>
                 </a>
-                {/* Line */}
+
                 <a
-                  href="https://line.me/ti/p/~6807ac.th"
+                  href="/resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-100/50 hover:bg-zinc-200/50 dark:bg-zinc-900/40 dark:hover:bg-zinc-900/80 border border-zinc-200/30 dark:border-zinc-800/50 text-xs font-semibold text-zinc-700 dark:text-zinc-300 transition-all duration-300"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-cyan-600 dark:hover:bg-cyan-500 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition-all duration-300"
                 >
-                  <MessageCircle size={16} className="text-green-600 dark:text-green-400" />
-                  <span className="truncate">Line ID: 6807ac.th</span>
-                </a>
-                {/* Email */}
-                <a
-                  href="mailto:topt75870@gmail.com"
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-100/50 hover:bg-zinc-200/50 dark:bg-zinc-900/40 dark:hover:bg-zinc-900/80 border border-zinc-200/30 dark:border-zinc-800/50 text-xs font-semibold text-zinc-700 dark:text-zinc-300 transition-all duration-300"
-                >
-                  <Mail size={16} className="text-red-500 dark:text-red-400" />
-                  <span className="truncate">topt75870@gmail.com</span>
+                  {t("hero_resume")}
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Details & Biography */}
-          <div className="md:col-span-2 space-y-6">
-            <div className="glass-card p-6 sm:p-8 rounded-3xl">
-              <h4 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
-                <span className="w-1.5 h-3.5 bg-blue-650 dark:bg-cyan-500 rounded-full" />
-                {t("about_bio_title")}
-              </h4>
-              <p className="text-zinc-650 dark:text-zinc-350 leading-relaxed text-sm sm:text-base font-medium">
+          {/* Right Column: Bio, Strengths, Education & Interests */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Bio Card */}
+            <div className="glass-card p-6 sm:p-7 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/80">
+              <div className="flex items-center gap-2.5 mb-3 text-blue-600 dark:text-cyan-400 font-bold text-sm">
+                <BookOpen size={18} />
+                <span>{t("about_bio_title")}</span>
+              </div>
+              <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm sm:text-base font-normal">
                 {lang === "th" && profileData.bio ? profileData.bio : t("about_bio_text")}
               </p>
             </div>
 
-            {/* Grid of Education, Languages, Interests */}
+            {/* Strengths / จุดเด่น & ความพร้อมในการทำงาน (From Resume) */}
+            <div className="glass-card p-6 sm:p-7 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/80">
+              <div className="flex items-center gap-2.5 mb-4 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+                <Sparkles size={18} />
+                <span>{t("about_strengths_title")}</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {strengths.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex items-center gap-3 p-3 rounded-2xl border ${item.bg} text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 transition-all duration-200 hover:scale-[1.01]`}
+                  >
+                    <div className="p-1.5 rounded-xl bg-white dark:bg-zinc-900 shadow-xs">
+                      {item.icon}
+                    </div>
+                    <span>{item.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Education & Language Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Education Card */}
-              <div className="glass-card p-6 rounded-3xl flex gap-4">
-                <div className="p-3 rounded-2xl bg-blue-50 dark:bg-cyan-955/20 text-blue-600 dark:text-cyan-400 h-fit border border-blue-100 dark:border-cyan-900/30">
-                  <BookOpen size={22} />
-                </div>
+              <div className="glass-card p-6 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/80 flex flex-col justify-between">
                 <div>
-                  <h4 className="font-bold text-zinc-900 dark:text-white mb-2">{t("about_education_title")}</h4>
-                  <p className="text-sm font-bold text-zinc-850 dark:text-zinc-200">
-                    {t("about_university")}
-                  </p>
-                  <p className="text-xs text-zinc-550 dark:text-zinc-400 mt-1 leading-relaxed">
-                    {t("about_faculty")}
-                  </p>
-                  <div className="inline-flex items-center gap-1 mt-3 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-zinc-100 dark:bg-zinc-900 text-zinc-750 dark:text-zinc-300">
-                    {t("about_gpa")}
+                  <div className="flex items-center gap-2.5 mb-3 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
+                    <GraduationCap size={18} />
+                    <span>{t("about_education_title")}</span>
                   </div>
+                  <h4 className="text-base font-bold text-zinc-900 dark:text-white">
+                    {lang === "th" && profileData.university ? profileData.university : t("about_university")}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
+                    {lang === "th" && profileData.faculty ? profileData.faculty : t("about_faculty")}
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-zinc-200/50 dark:border-zinc-800/60 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Cumulative GPA:</span>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-blue-50 text-blue-700 dark:bg-cyan-950/40 dark:text-cyan-300 border border-blue-200 dark:border-cyan-800/50">
+                    3.05 / 4.00
+                  </span>
                 </div>
               </div>
 
-              {/* Language & Interests Card */}
-              <div className="glass-card p-6 rounded-3xl flex gap-4">
-                <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-955/20 text-indigo-650 dark:text-indigo-400 h-fit border border-indigo-100 dark:border-indigo-900/30">
-                  <Languages size={22} />
+              {/* Language Card */}
+              <div className="glass-card p-6 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/80 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2.5 mb-3 text-cyan-600 dark:text-cyan-400 font-bold text-sm">
+                    <Languages size={18} />
+                    <span>{t("about_language_title")}</span>
+                  </div>
+                  <h4 className="text-base font-bold text-zinc-900 dark:text-white">
+                    English Proficiency
+                  </h4>
+                  <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
+                    {t("about_language_level_title")}: <strong className="text-zinc-800 dark:text-zinc-200">{t("about_language_level")}</strong>
+                  </p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
+                    สามารถสื่อสาร อ่านเอกสารทางเทคนิค และเข้าใจการเขียน Code / API Documentation ได้เป็นอย่างดี
+                  </p>
                 </div>
-                <div className="w-full">
-                  <h4 className="font-bold text-zinc-900 dark:text-white mb-2">{t("about_language_title")}</h4>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-semibold">{t("about_language_level_title")}</span>
-                    <span className="font-bold text-zinc-850 dark:text-zinc-200 text-xs">{t("about_language_level")}</span>
-                  </div>
-                  <div className="w-full bg-zinc-100 dark:bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-200/50 dark:border-zinc-800/80">
-                    <div className="bg-gradient-to-r from-blue-650 to-indigo-600 dark:from-cyan-500 dark:to-indigo-500 h-full rounded-full w-[65%]" />
-                  </div>
+                <div className="mt-4 pt-3 border-t border-zinc-200/50 dark:border-zinc-800/60 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Reading & Technical Docs:</span>
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Proficient</span>
                 </div>
               </div>
             </div>
 
-            {/* Interests Tag Cloud */}
-            <div className="glass-card p-6 rounded-3xl">
-              <div className="flex items-center gap-2 mb-4 text-zinc-900 dark:text-white">
-                <Heart size={20} className="text-rose-500" />
-                <h4 className="font-bold">{t("about_interests_title")}</h4>
+            {/* Technical Interests Tag Cloud */}
+            <div className="glass-card p-6 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/80">
+              <div className="flex items-center gap-2.5 mb-3.5 text-rose-600 dark:text-rose-400 font-bold text-sm">
+                <Heart size={18} />
+                <span>{t("about_interests_title")}</span>
               </div>
-              <div className="flex flex-wrap gap-2.5">
-                {profileData.interests.map((interest) => (
+              <div className="flex flex-wrap gap-2">
+                {profileData.interests.map((interest, idx) => (
                   <span
-                    key={interest}
-                    className="px-3.5 py-1.5 rounded-xl text-sm font-semibold bg-zinc-100/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-350 border border-zinc-200/40 dark:border-zinc-800/60 hover:border-blue-300 dark:hover:border-cyan-800 hover:text-blue-600 dark:hover:text-cyan-400 transition-all duration-300"
+                    key={idx}
+                    className="px-3 py-1.5 rounded-xl text-xs font-medium bg-zinc-100 dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-800 hover:border-blue-500 dark:hover:border-cyan-400 transition-colors"
                   >
-                    {interest}
+                    #{interest}
                   </span>
                 ))}
               </div>

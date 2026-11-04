@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowRight, Mail, Terminal, Shield, Cpu, Code2 } from "lucide-react";
+import { ArrowRight, Mail, Terminal, Shield, Cpu, Code2, FileDown, Sparkles, CheckCircle2, GraduationCap, Briefcase, MapPin, Clock, ExternalLink } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
-// Custom SVG Icons for Brands
+// Brand Icons
 const GithubIcon = ({ size = 20, className = "" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -60,13 +61,47 @@ const FacebookIcon = ({ size = 20, className = "" }) => (
   </svg>
 );
 
-import { useLanguage } from "../context/LanguageContext";
-
 export default function Hero() {
   const { t, lang } = useLanguage();
   const [terminalText, setTerminalText] = useState<string[]>([]);
   const [activeLine, setActiveLine] = useState(0);
   const [profileData, setProfileData] = useState<{ name?: string; title?: string }>({});
+  const [timeStr, setTimeStr] = useState<string>("");
+
+  // Role Rotator
+  const roles = [
+    "Front-end Developer (Next.js 16 & React 19)",
+    "Flutter Mobile Application Developer",
+    "Intern @ กองทุนเงินให้กู้ยืมเพื่อการศึกษา (กยศ.)",
+    "Computer Science Student (GPA 3.05)",
+    "Full-Stack & Gemini AI Enthusiast",
+  ];
+  const [roleIndex, setRoleIndex] = useState(0);
+
+  useEffect(() => {
+    const roleInterval = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 3200);
+    return () => clearInterval(roleInterval);
+  }, [roles.length]);
+
+  // Live Clock
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTimeStr(
+        now.toLocaleTimeString("th-TH", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        })
+      );
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -86,13 +121,12 @@ export default function Hero() {
   }, []);
 
   const logs = [
-    "Initializing Sirimongkol.OS...",
-    "Loading Computer Science profile parameters...",
-    "Scanning skills: HTML/CSS, JS, Next.js, Flutter, MySQL...",
-    "Connecting project repositories...",
-    "-> LouisAI LINE Bot [ONLINE]",
-    "-> GreenPoint [ONLINE] (linked to Figma)",
-    "System check complete. Welcome to the future.",
+    "sys.init: Sirimongkol.OS (Louis_6807) [ONLINE]",
+    "auth: B.Sc. Computer Science @ Sisaket Rajabhat (GPA 3.05)",
+    "flagship: LINE OA Multi-Company Intake (AI + Make + Drive)",
+    "internship: Software & System Intern @ Student Loan Fund (กยศ.)",
+    "stack: [TypeScript, JavaScript, Next.js 16, React 19, Flutter, Apps Script, MongoDB]",
+    "status: Ready for immediate start & interviews 🚀",
   ];
 
   useEffect(() => {
@@ -100,7 +134,7 @@ export default function Hero() {
       const timer = setTimeout(() => {
         setTerminalText((prev) => [...prev, logs[activeLine]]);
         setActiveLine((prev) => prev + 1);
-      }, 550);
+      }, 400);
       return () => clearTimeout(timer);
     }
   }, [activeLine]);
@@ -123,159 +157,311 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-[95vh] flex items-center justify-center pt-28 pb-16 overflow-hidden"
+      className="relative min-h-[96vh] flex flex-col justify-center pt-28 pb-16 overflow-hidden"
     >
-      {/* Futuristic Background */}
+      {/* Cyber Grid & Ambient Glows */}
       <div className="cyber-grid" />
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-[15%] left-[5%] w-80 h-80 bg-blue-500/10 dark:bg-cyan-500/5 rounded-full blur-[100px] animate-pulse-slow" />
-        <div className="absolute bottom-[15%] right-[5%] w-96 h-96 bg-indigo-500/15 dark:bg-purple-500/5 rounded-full blur-[120px] animate-pulse-slow delay-1000" />
+        <div className="absolute top-[8%] left-[5%] w-96 h-96 bg-cyan-500/15 dark:bg-cyan-500/15 rounded-full blur-[130px] animate-pulse-slow" />
+        <div className="absolute bottom-[5%] right-[5%] w-[420px] h-[420px] bg-purple-600/15 dark:bg-purple-600/15 rounded-full blur-[140px] animate-pulse-slow delay-1000" />
+        <div className="absolute top-[45%] left-[45%] w-80 h-80 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-        {/* Intro Text */}
-        <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-          <span className="inline-flex items-center gap-2 py-1.5 px-3 rounded-xl text-xs font-bold bg-blue-50/50 text-blue-600 border border-blue-200/50 dark:bg-cyan-950/20 dark:text-cyan-400 dark:border-cyan-900/40 w-fit">
-            <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-cyan-400 animate-ping" />
-            COMPUTER SCIENCE & WEB DEV
-          </span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          {/* Left Column: Hero Text & Information */}
+          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            {/* Status & Live Location Badges */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
+              <div className="inline-flex items-center gap-2 py-1.5 px-3.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 shadow-xs backdrop-blur-md">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span>{t("hero_status")}</span>
+              </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-none">
-            <span className="block text-zinc-900 dark:text-white mb-2">{t("hero_greeting")}</span>
-            <span className="block bg-gradient-to-r from-blue-605 via-cyan-600 to-indigo-600 dark:from-cyan-400 dark:via-blue-400 dark:to-violet-400 bg-clip-text text-transparent pb-2 filter drop-shadow-sm font-black">
-              {lang === "th" && profileData.name ? profileData.name : t("hero_name")}
-            </span>
-          </h1>
+              {timeStr && (
+                <div className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-mono font-semibold bg-zinc-100/80 dark:bg-zinc-900/80 text-zinc-600 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-800">
+                  <Clock size={12} className="text-cyan-500" />
+                  <span>{timeStr} ICT (GMT+7)</span>
+                </div>
+              )}
+            </div>
 
-          <p className="text-lg sm:text-xl font-bold tracking-wide text-zinc-700 dark:text-zinc-350">
-            {lang === "th" && profileData.title ? profileData.title : t("hero_role")}
-          </p>
+            {/* Main Greeting & Name */}
+            <div className="space-y-2">
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm sm:text-base font-semibold uppercase tracking-wider flex items-center justify-center lg:justify-start gap-2">
+                <Sparkles size={16} className="text-cyan-500" />
+                <span>{t("hero_greeting")}</span>
+              </p>
 
-          <p className="text-sm sm:text-base text-zinc-550 dark:text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-            {t("hero_subtitle")}
-          </p>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-none">
+                <span className="block shimmer-text font-black pb-1">
+                  {lang === "th" && profileData.name ? profileData.name : t("hero_name")}
+                </span>
+              </h1>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-            <button
-              onClick={() => handleScroll("#projects")}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6.5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 dark:bg-cyan-600 dark:hover:bg-cyan-500 text-white font-semibold shadow-lg shadow-blue-550/20 dark:shadow-cyan-950/30 transition-all duration-300 cursor-pointer active:scale-95 group"
-            >
-              {t("hero_btn_projects")}
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button
-              onClick={() => handleScroll("#contact")}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6.5 py-3 rounded-2xl bg-zinc-100/80 hover:bg-zinc-200/80 dark:bg-zinc-900/60 dark:hover:bg-zinc-800/85 text-zinc-700 dark:text-zinc-300 font-semibold transition-all duration-300 cursor-pointer active:scale-95"
-            >
-              {t("hero_btn_contact")}
-            </button>
+              {/* Dynamic Animated Rotating Role */}
+              <div className="h-9 flex items-center justify-center lg:justify-start">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-blue-50/80 dark:bg-cyan-950/40 border border-blue-200/70 dark:border-cyan-800/60 text-xs sm:text-sm font-bold text-blue-700 dark:text-cyan-300 shadow-xs animate-in fade-in duration-300">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  <span>{roles[roleIndex]}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Subtitle */}
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              {t("hero_subtitle")}
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
+              <button
+                onClick={() => handleScroll("#projects")}
+                className="relative group overflow-hidden inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-400 text-white text-sm font-bold shadow-lg shadow-blue-500/25 dark:shadow-cyan-900/50 transition-all duration-300 cursor-pointer active:scale-95"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  {t("hero_btn_projects")}
+                  <ArrowRight size={17} className="group-hover:translate-x-1 transition-transform" />
+                </span>
+                <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+              </button>
+
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 text-sm font-bold shadow-md hover:shadow-cyan-500/20 transition-all duration-300 active:scale-95"
+              >
+                <FileDown size={17} />
+                {t("hero_resume")}
+              </a>
+
+              <button
+                onClick={() => handleScroll("#contact")}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white/90 hover:bg-white dark:bg-zinc-900/80 dark:hover:bg-zinc-850 text-zinc-800 dark:text-zinc-200 border border-zinc-200/80 dark:border-zinc-800 text-sm font-semibold transition-all duration-300 active:scale-95 shadow-xs"
+              >
+                <Mail size={16} />
+                {t("hero_btn_contact")}
+              </button>
+            </div>
+
+            {/* Social Links Bar */}
+            <div className="flex justify-center lg:justify-start items-center gap-3.5 pt-2 text-zinc-500 dark:text-zinc-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Connect:</span>
+              <a
+                href="https://github.com/SirimongkolMannubut"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl bg-white dark:bg-zinc-900/80 hover:text-blue-600 dark:hover:text-cyan-400 border border-zinc-200/60 dark:border-zinc-800 hover:scale-110 transition-all duration-300 shadow-xs"
+                title="GitHub"
+              >
+                <GithubIcon size={18} />
+              </a>
+              <a
+                href="https://www.facebook.com/sirimongkol.manubut.577/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl bg-white dark:bg-zinc-900/80 hover:text-blue-600 dark:hover:text-cyan-400 border border-zinc-200/60 dark:border-zinc-800 hover:scale-110 transition-all duration-300 shadow-xs"
+                title="Facebook"
+              >
+                <FacebookIcon size={18} />
+              </a>
+              <a
+                href="https://www.figma.com/design/n7MeR6y12E3TSJlikgy8FG/GREEN_POINT_FOR_EVER?node-id=1100-1367&t=DjY83an2h8plSZme-0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl bg-white dark:bg-zinc-900/80 hover:text-blue-600 dark:hover:text-cyan-400 border border-zinc-200/60 dark:border-zinc-800 hover:scale-110 transition-all duration-300 shadow-xs"
+                title="Figma"
+              >
+                <FigmaIcon size={18} />
+              </a>
+              <a
+                href="mailto:topt75870@gmail.com"
+                className="p-2.5 rounded-xl bg-white dark:bg-zinc-900/80 hover:text-blue-600 dark:hover:text-cyan-400 border border-zinc-200/60 dark:border-zinc-800 hover:scale-110 transition-all duration-300 shadow-xs"
+                title="Email"
+              >
+                <Mail size={18} />
+              </a>
+            </div>
           </div>
 
-          <div className="flex justify-center lg:justify-start items-center gap-5 pt-2 text-zinc-450 dark:text-zinc-500">
-            <a
-              href="https://github.com/SirimongkolMannubut"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-zinc-900 dark:hover:text-cyan-400 transition-colors duration-300"
-              title="GitHub Profile"
-            >
-              <GithubIcon size={22} />
-            </a>
-            <a
-              href="https://www.facebook.com/sirimongkol.manubut.577/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-zinc-900 dark:hover:text-cyan-400 transition-colors duration-300"
-              title="Facebook Profile"
-            >
-              <FacebookIcon size={22} />
-            </a>
-            <a
-              href="https://www.figma.com/design/n7MeR6y12E3TSJlikgy8FG/GREEN_POINT_FOR_EVER?node-id=1100-1367&t=DjY83an2h8plSZme-0"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-zinc-900 dark:hover:text-cyan-400 transition-colors duration-300"
-              title="Figma Profile"
-            >
-              <FigmaIcon size={22} />
-            </a>
-            <a
-              href="mailto:topt75870@gmail.com"
-              className="hover:text-zinc-900 dark:hover:text-cyan-400 transition-colors duration-300"
-              title="Send Email"
-            >
-              <Mail size={22} />
-            </a>
+          {/* Right Column: Holographic Avatar Bento & Terminal */}
+          <div className="lg:col-span-5 w-full max-w-md mx-auto space-y-4">
+            {/* Holographic Avatar Bento Card */}
+            <div className="relative group">
+              {/* Animated Rotating Gradient Glow Halo */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 rounded-3xl blur-md opacity-35 group-hover:opacity-60 transition duration-500" />
+
+              <div className="relative glass-card p-5 rounded-3xl border border-zinc-200/80 dark:border-cyan-500/30 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center gap-4">
+                  {/* Portrait with Conic Glow Ring */}
+                  <div className="relative shrink-0">
+                    <div className="w-22 h-22 sm:w-26 sm:h-26 rounded-2xl overflow-hidden border-2 border-white dark:border-cyan-400 shadow-lg bg-zinc-900">
+                      <img
+                        src="/profile.jpg"
+                        alt="Sirimongkol Manubut"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    {/* Live Online Badge */}
+                    <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-900 flex items-center justify-center shadow-xs">
+                      <CheckCircle2 size={13} className="text-white" />
+                    </span>
+                  </div>
+
+                  {/* Profile Specs */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-black text-lg text-zinc-900 dark:text-white truncate">
+                      {lang === "th" && profileData.name ? profileData.name : "Sirimongkol Manubut"}
+                    </h3>
+                    <p className="text-xs font-bold text-blue-600 dark:text-cyan-400 truncate mt-0.5">
+                      Front-end & Flutter Developer
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 mt-2.5">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-950/50 dark:text-cyan-300 dark:border-cyan-800/50">
+                        <GraduationCap size={11} />
+                        GPA 3.05
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-800/50">
+                        <Briefcase size={11} />
+                        Intern @ กยศ.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating Micro Tech Chips */}
+                <div className="mt-4 pt-3 border-t border-zinc-200/50 dark:border-zinc-800/60 flex items-center justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-300">
+                  <span className="flex items-center gap-1 text-sky-500 dark:text-sky-400">
+                    ⚡ Flutter & Dart
+                  </span>
+                  <span className="flex items-center gap-1 text-cyan-500 dark:text-cyan-400">
+                    ⚛️ Next.js 16 / React
+                  </span>
+                  <span className="flex items-center gap-1 text-purple-500 dark:text-purple-400">
+                    🤖 Gemini AI
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Futuristic Terminal Widget with Scanline */}
+            <div className="relative w-full rounded-2xl overflow-hidden glass-card border border-zinc-200/80 dark:border-zinc-800/90 shadow-2xl">
+              {/* Scanline laser beam effect */}
+              <div className="scanline-beam" />
+
+              {/* Terminal Header */}
+              <div className="bg-zinc-100/95 dark:bg-zinc-950/95 px-4 py-2.5 border-b border-zinc-200/60 dark:border-zinc-800/70 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-rose-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                </div>
+                <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Terminal size={11} />
+                  sirimongkol.os - zsh
+                </span>
+              </div>
+
+              {/* Terminal Content */}
+              <div className="p-4 font-mono text-xs text-left h-48 overflow-y-auto no-scrollbar bg-white/40 dark:bg-black/50">
+                <div className="space-y-1.5">
+                  {terminalText.map((line, idx) => {
+                    let lineElement = <span className="text-zinc-800 dark:text-zinc-200 leading-relaxed">{line}</span>;
+
+                    if (line.includes("[ONLINE]")) {
+                      lineElement = (
+                        <span className="text-zinc-800 dark:text-zinc-200 leading-relaxed font-semibold">
+                          {line.replace(/\[ONLINE\]/g, "")}
+                          <span className="text-emerald-500 font-bold">[ONLINE]</span>
+                        </span>
+                      );
+                    } else if (line.includes("Ready for immediate start")) {
+                      lineElement = (
+                        <span className="text-cyan-500 dark:text-cyan-400 font-bold leading-relaxed">
+                          {line}
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <div key={idx} className="flex gap-2 text-[11px] sm:text-xs">
+                        <span className="text-blue-600 dark:text-cyan-400 font-bold">➜</span>
+                        {lineElement}
+                      </div>
+                    );
+                  })}
+                  {activeLine < logs.length && (
+                    <div className="flex gap-2">
+                      <span className="text-blue-600 dark:text-cyan-400 font-bold">➜</span>
+                      <span className="w-2 h-3.5 bg-zinc-800 dark:bg-cyan-400 cursor-blink inline-block" />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Terminal Footer */}
+              <div className="bg-zinc-50/80 dark:bg-zinc-950/80 px-4 py-2 border-t border-zinc-200/50 dark:border-zinc-800/70 grid grid-cols-3 gap-2 text-center text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">
+                <div className="flex flex-col items-center gap-0.5">
+                  <Cpu size={12} className="text-indigo-500" />
+                  <span>NEXT.JS 16</span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <Code2 size={12} className="text-cyan-400" />
+                  <span>REACT 19</span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <Shield size={12} className="text-emerald-400" />
+                  <span>SECURE SSL</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Futuristic Terminal Widget */}
-        <div className="lg:col-span-5 w-full max-w-md mx-auto animate-float">
-          <div className="w-full rounded-2xl overflow-hidden glass-card border border-zinc-200/50 dark:border-zinc-800/80 shadow-2xl">
-            {/* Terminal Header */}
-            <div className="bg-zinc-100/80 dark:bg-zinc-950/80 px-4.5 py-3 border-b border-zinc-200/40 dark:border-zinc-850/50 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3.5 h-3.5 rounded-full bg-rose-500/80" />
-                <div className="w-3.5 h-3.5 rounded-full bg-amber-500/80" />
-                <div className="w-3.5 h-3.5 rounded-full bg-emerald-500/80" />
-              </div>
-              <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
-                <Terminal size={10} />
-                zsh - sirimongkol.os
-              </span>
+        {/* Highlight Stats Ribbon */}
+        <div className="mt-14 pt-8 border-t border-zinc-200/60 dark:border-zinc-800/60 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="glass-card p-4 rounded-2xl flex items-center gap-3.5 border border-zinc-200/60 dark:border-zinc-800 hover:border-cyan-500/40 transition-all hover:scale-[1.02]">
+            <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-600 dark:text-cyan-400">
+              <GraduationCap size={22} />
             </div>
-            {/* Terminal Content */}
-            <div className="p-5 font-mono text-xs text-left h-64 overflow-y-auto no-scrollbar bg-white/30 dark:bg-black/35">
-              <div className="space-y-2">
-                {terminalText.map((line, idx) => {
-                  let lineElement = <span className="text-zinc-800 dark:text-zinc-100 leading-relaxed">{line}</span>;
-                  
-                  if (line.includes("[ONLINE]")) {
-                    const parts = line.split("[ONLINE]");
-                    lineElement = (
-                      <span className="text-zinc-800 dark:text-zinc-100 leading-relaxed font-semibold">
-                        {parts[0]}
-                        <span className="text-emerald-600 dark:text-emerald-400">[ONLINE]</span>
-                        {parts[1]}
-                      </span>
-                    );
-                  } else if (line.includes("System check complete")) {
-                    lineElement = (
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold leading-relaxed">
-                        {line}
-                      </span>
-                    );
-                  }
-                  
-                  return (
-                    <div key={idx} className="flex gap-2">
-                      <span className="text-blue-600 dark:text-cyan-400 font-bold">➜</span>
-                      {lineElement}
-                    </div>
-                  );
-                })}
-                {activeLine < logs.length && (
-                  <div className="flex gap-2">
-                    <span className="text-blue-600 dark:text-cyan-400 font-bold">➜</span>
-                    <span className="w-2.5 h-4 bg-zinc-800 dark:bg-cyan-400 cursor-blink inline-block" />
-                  </div>
-                )}
-              </div>
+            <div>
+              <div className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">3.05</div>
+              <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">{t("hero_stat_gpa")}</div>
             </div>
-            {/* Tech stats footer */}
-            <div className="bg-zinc-50/50 dark:bg-zinc-950/55 p-4 border-t border-zinc-200/40 dark:border-zinc-850/50 grid grid-cols-3 gap-2 text-center text-[10px] text-zinc-450 dark:text-zinc-500 font-mono">
-              <div className="flex flex-col items-center gap-1">
-                <Cpu size={12} className="text-indigo-500 dark:text-indigo-400" />
-                <span>CPU STABLE</span>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <Code2 size={12} className="text-blue-500 dark:text-cyan-400" />
-                <span>NEXTJS 16</span>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <Shield size={12} className="text-emerald-500 dark:text-emerald-400" />
-                <span>SSL SECURE</span>
-              </div>
+          </div>
+
+          <div className="glass-card p-4 rounded-2xl flex items-center gap-3.5 border border-zinc-200/60 dark:border-zinc-800 hover:border-cyan-500/40 transition-all hover:scale-[1.02]">
+            <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+              <Briefcase size={22} />
+            </div>
+            <div>
+              <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white">{t("hero_stat_internship_val")}</div>
+              <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">{t("hero_stat_internship")}</div>
+            </div>
+          </div>
+
+          <div className="glass-card p-4 rounded-2xl flex items-center gap-3.5 border border-zinc-200/60 dark:border-zinc-800 hover:border-cyan-500/40 transition-all hover:scale-[1.02]">
+            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <Code2 size={22} />
+            </div>
+            <div>
+              <div className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">3+ Featured</div>
+              <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">{t("hero_stat_projects")}</div>
+            </div>
+          </div>
+
+          <div className="glass-card p-4 rounded-2xl flex items-center gap-3.5 border border-zinc-200/60 dark:border-zinc-800 hover:border-cyan-500/40 transition-all hover:scale-[1.02]">
+            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <Sparkles size={22} />
+            </div>
+            <div>
+              <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white">Gemini AI</div>
+              <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">AI Co-Pilot Assistant</div>
             </div>
           </div>
         </div>

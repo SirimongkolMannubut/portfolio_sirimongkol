@@ -2,93 +2,103 @@ import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const SYSTEM_PROMPT = `
-คุณคือ "Sirimongkol AI Co-Pilot" ผู้ช่วยอัจฉริยะประจำเว็บ Portfolio ของ ศิริมงคล มนุบุตร (Sirimongkol Manubut)
-คุณมีหน้าที่ตอบคำถามและให้ข้อมูลแก่ HR, ผู้ว่าจ้าง หรือผู้เยี่ยมชมเว็บด้วยความสุภาพ มืออาชีพ และกระตือรือร้น
+คุณคือ "Sirimongkol AI Co-Pilot" ผู้ช่วยอัจฉริยะประจำเว็บไซต์ Portfolio ของ ศิริมงคล มนุบุตร (Sirimongkol Manubut / ชื่อเล่น: ท็อป หรือ Louis_6807)
+หน้าที่ของคุณคือตอบคำถามและให้ข้อมูลแก่ HR, Recruiter, ผู้ว่าจ้าง หรือผู้เยี่ยมชมเว็บด้วยความสุภาพ มืออาชีพ มั่นใจ และกระตือรือร้น
 
-[ข้อมูลของ ศิริมงคล มนุบุตร (Sirimongkol Manubut)]
-- ชื่อ-นามสกุล: ศิริมงคล มนุบุตร (ชื่อเล่น: ท็อป / Top)
-- ตำแหน่งที่สนใจ: Front-end Developer, Full-Stack Developer, Web Developer, AI Software Engineer
-- สถานะปัจจุบัน: นักศึกษาสาขาวิทยาการคอมพิวเตอร์ มหาวิทยาลัยราชภัฏศรีสะเกษ (GPA: 3.05) พร้อมรับโอกาสทำงานและฝึกงาน
-- ทักษะหลัก: 
-  * Web: Next.js, React.js, JavaScript, HTML5/CSS3, Tailwind CSS
-  * Mobile: Flutter, Dart
-  * Database: MongoDB, MySQL
-  * Tools & Others: Python, Git/GitHub, Figma, AI Integration, LINE Messaging API
-- ผลงานเด่น:
-  1. LouisAI LINE Bot: AI-powered LINE chatbot ที่ตอบคำถามอัตโนมัติ พัฒนาด้วย Python และเชื่อมต่อ OpenAI API รองรับสองภาษา
-  2. GreenPoint: แอปพลิเคชันมือถือและเว็บสะสมแต้มสินค้าสีเขียว พัฒนาด้วย Flutter, Next.js, MongoDB และออกแบบ UI/UX ด้วย Figma
-- ประสบการณ์และกิจกรรม:
-  1. นักศึกษาฝึกงานที่ สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน (สพฐ. / OBEC) (มิ.ย. - ก.ค. 2567) ดูแลระบบสารสนเทศ เอกสาร และทดสอบระบบ
-  2. ผ่านการอบรมพัฒนาเว็บแอปพลิเคชันจาก Google Developer Groups (GDG)
-- ข้อมูลติดต่อ:
-  * เบอร์โทร: 065-590-3845
-  * อีเมล: topt75870@gmail.com
-  * Line ID: 6807ac.th
-  * GitHub: https://github.com/SirimongkolMannubut
-  * Facebook: https://www.facebook.com/sirimongkol.manubut.577/
+[ข้อมูลประวัติและข้อมูลส่วนตัวของ ศิริมงคล มนุบุตร]
+- ชื่อ-นามสกุล: ศิริมงคล มนุบุตร (Sirimongkol Manubut)
+- ชื่อเล่น: ท็อป (Top) หรือ Louis_6807
+- ตำแหน่งที่มุ่งมั่นและพร้อมทำงาน: Front-end Developer, Flutter Developer, Workflow Automation & Full-Stack Developer
+- การศึกษา: นักศึกษาสาขาวิทยาการคอมพิวเตอร์ คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยราชภัฏศรีสะเกษ (GPA: 3.05)
+- สถานะ: พร้อมเริ่มงานทันที / สัมภาษณ์งาน (Fast Learner & High Responsibility)
 
-[คำสั่งการทำงาน]
-1. ตอบคำถามอย่างเป็นมิตร สุภาพ ชัดเจน และตรงประเด็น
-2. ตอบเป็นภาษาเดียวกับที่ผู้ใช้พิมพ์ถามมา (รองรับ ไทย, English, 中文, 日本語)
-3. หากคำถามเกี่ยวข้องกับโอกาสทำงาน สัมภาษณ์ หรือฝึกงาน ให้เชิญชวนติดต่อผ่านอีเมลหรือเบอร์โทรด้านบนอย่างสุภาพ
+[จุดเด่นและความพร้อมในการทำงาน (Key Strengths)]
+1. เรียนรู้ได้รวดเร็ว (Fast Learner) - พร้อมศึกษาเทคโนโลยีใหม่ ๆ ได้อย่างรวดเร็ว
+2. มีความรับผิดชอบสูง (High Responsibility) - ทุ่มเทและส่งมอบงานตรงตามเวลา
+3. ทำงานเป็นทีมได้ดี (Strong Team Player) - สื่อสารชัดเจน ทำงานร่วมกับผู้อื่นได้ราบรื่น
+4. มีไหวพริบแก้ปัญหาเฉพาะหน้า (Problem Solver) - สามารถวิเคราะห์และแก้ไขบั๊กหรือปัญหาเทคนิคได้เฉียบคม
+5. พร้อมรับฟังความคิดเห็นและพัฒนาตนเองอยู่เสมอ (Growth Mindset)
+
+[ทักษะความเชี่ยวชาญ (Tech Stack)]
+- Web & Full-Stack: TypeScript (TS), JavaScript (ES6+), Next.js 16 (App Router), React 19, Node.js API Route Handlers, HTML5, Modern CSS3, Tailwind CSS v4, Responsive Web Design
+- Mobile Development: Flutter, Dart, Cross-Platform Mobile Architecture, UI Components
+- Workflow Automation & Integration: LINE Messaging API (Webhook, Quick Reply, Postback, Content API), Make (Integromat) Router 9 เส้นทาง, Google Apps Script (JavaScript)
+- Database & Cloud: MongoDB Atlas & Mongoose, MySQL, JWT & Bcrypt Authentication, Google Sheets API, Google Drive Multi-Tenant Architecture, Make Data Store (Deduplication)
+- AI & LLM Tools: Claude Haiku (Structured JSON Extraction & Prompt Engineering), Google Gemini AI, OpenAI API, Python
+
+[ผลงานและโปรเจกต์เด่น (Featured Projects)]
+1. 🌟 ระบบรับเอกสารบัญชีอัตโนมัติผ่าน LINE OA สำหรับหลายบริษัท (LINE OA Multi-Company Document Intake):
+   - พัฒนาโดย Louis_6807 (4 พ.ย. 2026) ช่วงฝึกงาน
+   - รองรับลูกค้ากว่า 10 บริษัทผ่าน LINE OA เดียวกัน พนักงานส่งเอกสาร (ใบกำกับภาษี, ใบเสร็จ, ใบแจ้งหนี้, 50 ทวิ, สลิป) ผ่านแชท
+   - ใช้ AI (Claude Haiku) สกัดข้อมูลสำคัญ แปลงเป็น Structured JSON
+   - ตรรกะแยก 8 หมวดหมู่ (ภาษีซื้อ 01 / ภาษีขาย 02 โดยเทียบเลขผู้เสียภาษี 13 หลัก, ใบเสร็จ 03, ใบแจ้งหนี้ 04, 50 ทวิ 05, สลิป 06, เอกสารอื่น 07, รอตรวจสอบ 99)
+   - ความปลอดภัยระดับองค์กร: สิทธิ์พนักงาน Multi-Tenant, Session 15 นาที, ตรวจโฟลเดอร์ห้ามแชร์สาธารณะ, ห้าม AI เดาบริษัท, ระบบตรวจเอกสารซ้ำ (Deduplication) และ Audit Log ครบวงจร
+   - มี Google Apps Script สำหรับผู้ดูแลสร้างโฟลเดอร์รายเดือนและตั้งค่าบริษัทใหม่อัตโนมัติ (Idempotent)
+
+2. ระบบสารสนเทศและจัดการเอกสาร กยศ. (SLF Internal Portal & Document Workflow):
+   - ผลงานช่วงฝึกงานที่ กองทุนเงินให้กู้ยืมเพื่อการศึกษา (กยศ.)
+   - ร่วมทดสอบระบบ (QA & Feature Testing), ตรวจสอบความถูกต้องของฐานข้อมูลเอกสาร และจัดทำรายงานวิเคราะห์ข้อมูล (Data Analytics Report) นำเสนอผู้บริหาร
+
+3. GreenPoint (Eco-Point Platform):
+   - แอปพลิเคชันมือถือและเว็บสะสมแต้มสินค้าเพื่อสิ่งแวดล้อม พัฒนาด้วย Flutter และ Next.js เชื่อมต่อ MongoDB รองรับแผนที่ร้านค้าพาร์ทเนอร์ สแกน QR Code รับแต้มจริง ออกแบบ UI/UX บน Figma
+
+4. LouisAI (LINE Bot Assistant):
+   - แชทบอท LINE อัจฉริยะโต้ตอบอัตโนมัติ พัฒนาด้วย Python และเชื่อมต่อ AI API รองรับภาษาไทยและอังกฤษ
+
+[ข้อมูลการติดต่อสำหรับสัมภาษณ์งาน]
+- เบอร์โทรศัพท์: 065-590-3845
+- อีเมล: topt75870@gmail.com
+- Line ID: 6807ac.th
+- GitHub: https://github.com/SirimongkolMannubut
+- Facebook: https://www.facebook.com/sirimongkol.manubut.577/
+- Resume PDF: สามารถดาวน์โหลดได้จากปุ่ม "ดาวน์โหลด Resume" ที่หน้าแรกของเว็บ
 `;
 
 function getSmartFallbackReply(message: string, lang: string = "th"): string {
   const msg = message.toLowerCase();
 
-  // Skills / ถนัดอะไร
-  if (msg.includes("ถนัด") || msg.includes("สกิล") || msg.includes("skill") || msg.includes("能力") || msg.includes("スキル")) {
+  // Accounting Automation / LINE OA Multi-company
+  if (msg.includes("บัญชี") || msg.includes("line oa") || msg.includes("make") || msg.includes("เอกสาร") || msg.includes("intake") || msg.includes("ภาษี") || msg.includes("accounting")) {
     if (lang === "en") {
-      return "Sirimongkol specializes in Web & Mobile Development! 🚀\n- Front-end: Next.js, React.js, Tailwind CSS, JavaScript\n- Mobile: Flutter, Dart\n- Database: MongoDB, MySQL\n- AI & Tools: Python, Git/GitHub, Figma, OpenAI & Gemini API Integration";
+      return "Sirimongkol developed a production-grade 'LINE OA Multi-Company Document Intake & Accounting Automation' system! ⚡\nKey Highlights:\n1. Supports 10+ client companies via a single LINE OA.\n2. AI (Claude) extracts structured financial data (Invoices, Receipts, 50 Tawi, Slips).\n3. Automatically separates Input VAT (01) & Output VAT (02) using 13-digit Tax IDs.\n4. Multi-tenant access security, 15-minute session TTL, deduplication, and full Audit Logging.\n5. Google Apps Script automation for monthly folder & company provisioning.";
     }
     if (lang === "zh") {
-      return "Sirimongkol 最擅长的专业技能包括：🚀\n- Web 前端开发: Next.js, React.js, Tailwind CSS, JavaScript\n- 移动端开发: Flutter, Dart\n- 数据库: MongoDB, MySQL\n- AI 与工具: Python, Git/GitHub, Figma, AI API 接入";
+      return "Sirimongkol 在实习期间主导研发了「基于 LINE OA 的多公司会计单据自动化流转系统」！⚡\n核心亮点：\n1. 单一 LINE OA 服务 10+ 家客户企业，多租户隔离。\n2. AI (Claude) 智能提取结构化单据数据（发票、收据、扣缴凭单、转账凭证）。\n3. 通过 13 位税号智能自动划分进项税 (01) 与销项税 (02)，分入 Drive 8大类别。\n4. 严格权限校验、15分钟会话时效、单据防重机制与全程审计日志 (Audit Log)。\n5. Google Apps Script 自动化脚本一键批量部署月度目录。";
     }
     if (lang === "ja") {
-      return "シリモンコンが得意とする専門スキルはこちらです：🚀\n- Webフロントエンド: Next.js, React.js, Tailwind CSS, JavaScript\n- モバイルアプリ: Flutter, Dart\n- データベース: MongoDB, MySQL\n- AI・ツール: Python, Git/GitHub, Figma, AI API連携";
+      return "シリモンコンが実務インターンで構築した「LINE OA 複数企業向け会計書類自動仕分けシステム」の概要です！⚡\n主な特徴：\n1. 1つのLINE OAで10社以上のクライアント企業に対応（マルチテナント管理）\n2. AI (Claude) による請求書・領収書・50タウィ・送金明細の自動OCRとJSON出力\n3. 13桁の納税者番号による仕入税 (01) / 売上税 (02) の自動判定およびGoogle Drive 8区分仕分け\n4. 15分セッション制限、二重登録防止 (Deduplication)、完全監査ログ\n5. Google Apps Scriptによる月別フォルダ自動プロビジョニング";
     }
-    return "ศิริมงคล มีความเชี่ยวชาญโดดเด่นในด้าน Web & Mobile Development ครับ! 🚀\n- ฝั่ง Web: Next.js, React.js, Tailwind CSS, JavaScript, HTML5/CSS3\n- ฝั่ง Mobile: Flutter, Dart\n- ฐานข้อมูล: MongoDB, MySQL\n- เครื่องมือ & AI: Python, Git/GitHub, Figma, AI Integration (OpenAI / Gemini API)";
+    return "ศิริมงคล ได้พัฒนา 'ระบบรับเอกสารบัญชีอัตโนมัติผ่าน LINE OA สำหรับหลายบริษัท' ในช่วงฝึกงานครับ! ⚡\nจุดเด่นสำคัญของระบบนี้:\n1. รองรับการใช้งานจริงกว่า 10 บริษัทลูกค้าผ่าน LINE OA เดียวกัน ด้วยระบบสิทธิ์ Multi-Tenant ป้องกันข้อมูลปนกัน\n2. ใช้ AI (Claude) สกัดข้อมูลสำคัญจากเอกสาร (เลขที่, วันที่, ยอดก่อน VAT, ยอดรวม, เลขผู้เสียภาษี) ตอบเป็น Structured JSON\n3. ตรรกะคัดแยกภาษีซื้อ (01) และ ภาษีขาย (02) อัตโนมัติด้วยการเทียบเลขผู้เสียภาษี 13 หลัก พร้อมจัดเก็บไฟล์ลง Google Drive แยก 8 หมวดหมู่ตามงวดบัญชี\n4. ปลอดภัยสูงสุดด้วยนโยบาย Zero Guessing, Session 15 นาที, ตรวจจับเอกสารซ้ำ (Deduplication) และ Audit Log ทุกขั้นตอน\n5. พัฒนา Google Apps Script ให้ผู้ดูแลสร้างโฟลเดอร์รายเดือนและตั้งค่าบริษัทใหม่อัตโนมัติด้วยคลิกเดียวครับ!";
+  }
+
+  // Internship / กยศ / ฝึกงาน
+  if (msg.includes("กยศ") || msg.includes("ฝึกงาน") || msg.includes("intern") || msg.includes("slf") || msg.includes("实习") || msg.includes("インターン")) {
+    if (lang === "en") {
+      return "Sirimongkol completed practical internship experiences including:\n1. Student Loan Fund (กยศ. / SLF Thailand) - Web & System QA testing, database document integrity, and executive analytics reporting.\n2. Accounting Practice Automation - Engineered the LINE OA Multi-Company AI Document Intake workflow system for 10+ companies!";
+    }
+    return "ศิริมงคล มีผลงานโดดเด่นในช่วงฝึกงาน 2 ส่วนหลักครับ:\n1. ระบบรับเอกสารบัญชีอัตโนมัติผ่าน LINE OA สำหรับหลายบริษัท (AI + Make + Google Drive/Sheets + Apps Script) รองรับ 10+ บริษัท\n2. นักศึกษาฝึกงานที่ กองทุนเงินให้กู้ยืมเพื่อการศึกษา (กยศ.) สนับสนุนการทดสอบระบบภายใน (QA Testing), ดูแลฐานข้อมูลเอกสาร, และวิเคราะห์ข้อมูลรายงานผู้บริหารครับ";
+  }
+
+  // Skills
+  if (msg.includes("ถนัด") || msg.includes("สกิล") || msg.includes("skill") || msg.includes("能力") || msg.includes("スキル")) {
+    if (lang === "en") {
+      return "Sirimongkol specializes in Modern Web, Mobile, and Enterprise Automation! 🚀\n- Front-end: Next.js 16, React 19, Tailwind CSS v4, JavaScript (ES6+)\n- Mobile: Flutter, Dart\n- Automation & Workflow: LINE Messaging API, Make (Integromat), Google Apps Script\n- Database: MongoDB, MySQL, Google Sheets/Drive Architecture\n- AI: Claude Haiku Structured OCR, Gemini AI, OpenAI API";
+    }
+    return "ศิริมงคล มีความเชี่ยวชาญทั้งด้าน Web, Mobile และ Enterprise Automation ครับ! 🚀\n- Front-end & Web: Next.js 16, React 19, Tailwind CSS v4, JavaScript (ES6+)\n- Mobile: Flutter, Dart\n- ระบบอัตโนมัติ (Workflow Automation): LINE Messaging API, Make (Integromat) Router 9 เส้นทาง, Google Apps Script\n- ฐานข้อมูล: MongoDB Atlas, MySQL, Google Sheets/Drive System\n- AI: Claude AI (Structured Output), Gemini AI, OpenAI API";
   }
 
   // Contact / ติดต่อ / สัมภาษณ์
   if (msg.includes("ติดต่อ") || msg.includes("สัมภาษณ์") || msg.includes("contact") || msg.includes("email") || msg.includes("phone") || msg.includes("联系") || msg.includes("連絡")) {
-    if (lang === "en") {
-      return "You can reach Sirimongkol directly via: 📬\n- Phone: 065-590-3845\n- Email: topt75870@gmail.com\n- Line ID: 6807ac.th\n- GitHub: github.com/SirimongkolMannubut\nHe is ready for work & internship opportunities!";
-    }
-    if (lang === "zh") {
-      return "您可以通过以下方式直接联系 Sirimongkol：📬\n- 电话: 065-590-3845\n- 邮箱: topt75870@gmail.com\n- Line ID: 6807ac.th\n- GitHub: github.com/SirimongkolMannubut\n他已准备好随时接受工作与实习面试！";
-    }
-    if (lang === "ja") {
-      return "シリモンコンへのご連絡・面接の相談はこちらから可能です：📬\n- 電話番号: 065-590-3845\n- メール: topt75870@gmail.com\n- Line ID: 6807ac.th\n- GitHub: github.com/SirimongkolMannubut\n面接やインターンシップのお問い合わせをお待ちしております！";
-    }
-    return "สามารถติดต่อ ศิริมงคล เพื่อพูดคุยหรือสัมภาษณ์งาน/ฝึกงานได้ที่: 📬\n- เบอร์โทรศัพท์: 065-590-3845\n- อีเมล: topt75870@gmail.com\n- Line ID: 6807ac.th\n- GitHub: github.com/SirimongkolMannubut\nพร้อมเปิดรับโอกาสทำงานและฝึกงานครับ!";
+    return "สามารถติดต่อ ศิริมงคล เพื่อพูดคุยหรือนัดสัมภาษณ์งานได้ทันทีที่: 📬\n- เบอร์โทรศัพท์: 065-590-3845\n- อีเมล: topt75870@gmail.com\n- Line ID: 6807ac.th\n- GitHub: github.com/SirimongkolMannubut\nพร้อมเริ่มงานทันทีและเปิดรับโอกาสสัมภาษณ์ครับ!";
   }
 
-  // Projects / ผลงาน
+  // Projects
   if (msg.includes("ผลงาน") || msg.includes("โปรเจกต์") || msg.includes("project") || msg.includes("项目") || msg.includes("実績")) {
-    if (lang === "en") {
-      return "Sirimongkol's featured projects: 💡\n1. LouisAI LINE Bot: AI-powered automated LINE chatbot built with Python & OpenAI API.\n2. GreenPoint: Eco-friendly green points collection app built with Flutter, Next.js & MongoDB.";
-    }
-    if (lang === "zh") {
-      return "Sirimongkol 代表项目作品：💡\n1. LouisAI LINE Bot: 基于 Python 和 OpenAI API 开发的智能问答 LINE 聊天机器人。\n2. GreenPoint: 环保绿点积分手机与 Web 应用，基于 Flutter, Next.js 及 MongoDB。";
-    }
-    if (lang === "ja") {
-      return "シリモンコンの主な制作実績：💡\n1. LouisAI LINE Bot: PythonとOpenAI APIを活用したAI自動応答LINEボット。\n2. GreenPoint: Flutter、Next.js、MongoDBを活用した環境保護ポイント還元アプリ。";
-    }
-    return "ผลงานเด่นของ ศิริมงคล ได้แก่: 💡\n1. LouisAI LINE Bot: แชทบอทตอบคำถามอัตโนมัติอัจฉริยะ เชื่อมต่อ OpenAI API ด้วย Python\n2. GreenPoint: เว็บและแอปมือถือสำหรับสะสมแต้มสินค้าสีเขียว พัฒนาด้วย Flutter, Next.js และ MongoDB";
+    return "ผลงานเด่นของ ศิริมงคล ได้แก่: 💡\n1. ระบบรับเอกสารบัญชีอัตโนมัติผ่าน LINE OA สำหรับหลายบริษัท (LINE OA Multi-Company Intake - AI + Make + Apps Script)\n2. ระบบสารสนเทศและจัดการเอกสาร กยศ. (SLF Internal Portal & QA Testing)\n3. GreenPoint: แอปพลิเคชันมือถือและเว็บสะสมแต้มสินค้าสีเขียว (Flutter, Next.js, MongoDB)\n4. LouisAI: แชทบอท LINE โต้ตอบอัตโนมัติด้วย AI";
   }
 
   // Default fallback
-  if (lang === "en") {
-    return "Hello! I'm Sirimongkol's AI Assistant. Feel free to ask about his skills, projects, education, or contact details for work opportunities!";
-  }
-  if (lang === "zh") {
-    return "您好！我是 Sirimongkol 的 AI 助手。欢迎询问有关他的专业技能、项目作品、教育背景及联系方式！";
-  }
-  if (lang === "ja") {
-    return "こんにちは！シリモンコンのAIアシスタントです。スキル、実績、学歴、またはお仕事のご連絡についてお気軽にお尋ねください！";
-  }
-  return "สวัสดีครับ! ผมคือ AI ผู้ช่วยของ ศิริมงคล มนุบุตร คุณสามารถสอบถามเกี่ยวกับ ทักษะความเชี่ยวชาญ, ผลงานโปรเจกต์, ประวัติการศึกษา หรือช่องทางการติดต่อได้เลยครับ! 🚀";
+  return "สวัสดีครับ! ผมคือ AI Co-Pilot ผู้ช่วยของ ศิริมงคล มนุบุตร (Louis_6807) คุณสามารถสอบถามเกี่ยวกับ ผลงานระบบรับเอกสารบัญชีอัตโนมัติ LINE OA, ผลงานฝึกงาน กยศ., โปรเจกต์ GreenPoint / LouisAI, ทักษะความเชี่ยวชาญ หรือนัดสัมภาษณ์งานได้เลยครับ! 🚀";
 }
 
 export async function POST(request: Request) {
@@ -99,36 +109,37 @@ export async function POST(request: Request) {
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-    if (apiKey) {
-      try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
-          systemInstruction: SYSTEM_PROMPT,
-        });
 
-        const chatHistory = (history || []).map((h: any) => ({
-          role: h.role === "user" ? "user" : "model",
-          parts: [{ text: h.content }],
-        }));
-
-        const chat = model.startChat({ history: chatHistory });
-        const result = await chat.sendMessage(message);
-        const responseText = result.response.text();
-
-        return NextResponse.json({ reply: responseText });
-      } catch (geminiErr: any) {
-        console.warn("⚠️ Gemini API Call Failed, falling back to smart reply:", geminiErr.message);
-      }
+    if (!apiKey) {
+      const fallbackReply = getSmartFallbackReply(message, lang);
+      return NextResponse.json({ reply: fallbackReply });
     }
 
-    // Smart fail-safe fallback reply if GEMINI_API_KEY is not set or temporary rate-limited
-    const smartReply = getSmartFallbackReply(message, lang);
-    return NextResponse.json({ reply: smartReply });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: SYSTEM_PROMPT,
+    });
+
+    const chat = model.startChat({
+      history: Array.isArray(history)
+        ? history.slice(-6).map((msg: any) => ({
+            role: msg.role === "user" ? "user" : "model",
+            parts: [{ text: msg.content || "" }],
+          }))
+        : [],
+    });
+
+    const result = await chat.sendMessage(message);
+    const response = await result.response;
+    const text = response.text();
+
+    return NextResponse.json({ reply: text });
   } catch (error: any) {
-    return NextResponse.json(
-      { reply: "ขออภัยครับ เกิดข้อผิดพลาดชั่วคราวในการประมวลผล กรุณาลองใหม่อีกครั้ง" },
-      { status: 500 }
-    );
+    const fallbackReply = getSmartFallbackReply("สวัสดีครับ");
+    return NextResponse.json({
+      reply: fallbackReply,
+      warning: "Using local AI Co-Pilot logic",
+    });
   }
 }

@@ -75,21 +75,21 @@ const DEFAULT_CONTACT: ContactItem[] = [
     value: "065-590-3845",
     href: "tel:0655903845",
     icon: <Phone size={20} />,
-    color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-955/20 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30",
+    color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30",
   },
   {
     label: "อีเมล",
     value: "topt75870@gmail.com",
     href: "mailto:topt75870@gmail.com",
     icon: <Mail size={20} />,
-    color: "bg-blue-50 text-blue-600 dark:bg-cyan-955/20 dark:text-cyan-400 border border-blue-105 dark:border-cyan-900/30",
+    color: "bg-blue-50 text-blue-600 dark:bg-cyan-950/40 dark:text-cyan-400 border border-blue-200 dark:border-cyan-900/30",
   },
   {
     label: "Line ID",
     value: "6807ac.th",
     href: "https://line.me/ti/p/~6807ac.th",
     icon: <MessageCircle size={20} />,
-    color: "bg-green-50 text-green-600 dark:bg-green-955/20 dark:text-green-400 border border-green-100 dark:border-green-900/30",
+    color: "bg-green-50 text-green-600 dark:bg-green-950/40 dark:text-green-400 border border-green-100 dark:border-green-900/30",
   },
 ];
 
@@ -116,21 +116,21 @@ export default function Contact() {
               value: data.phone || "065-590-3845",
               href: `tel:${(data.phone || "0655903845").replace(/[^0-9]/g, "")}`,
               icon: <Phone size={20} />,
-              color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-955/20 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30",
+              color: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30",
             },
             {
               label: "อีเมล",
               value: data.email || "topt75870@gmail.com",
               href: `mailto:${data.email || "topt75870@gmail.com"}`,
               icon: <Mail size={20} />,
-              color: "bg-blue-50 text-blue-600 dark:bg-cyan-955/20 dark:text-cyan-400 border border-blue-105 dark:border-cyan-900/30",
+              color: "bg-blue-50 text-blue-600 dark:bg-cyan-950/40 dark:text-cyan-400 border border-blue-200 dark:border-cyan-900/30",
             },
             {
               label: "Line ID",
               value: data.lineId || "6807ac.th",
               href: `https://line.me/ti/p/~${data.lineId || "6807ac.th"}`,
               icon: <MessageCircle size={20} />,
-              color: "bg-green-50 text-green-600 dark:bg-green-955/20 dark:text-green-400 border border-green-100 dark:border-green-900/30",
+              color: "bg-green-50 text-green-600 dark:bg-green-950/40 dark:text-green-400 border border-green-100 dark:border-green-900/30",
             },
           ]);
         }
@@ -184,16 +184,19 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-20 relative bg-zinc-550/5 dark:bg-zinc-950/20 overflow-hidden">
+    <section id="contact" className="py-24 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute bottom-[-10%] left-[10%] w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[10%] w-[450px] h-[450px] bg-blue-500/10 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400 bg-blue-50/80 dark:bg-cyan-950/40 px-3.5 py-1 rounded-full border border-blue-200/60 dark:border-cyan-800/50">
+            CONNECT DIRECTLY
+          </span>
+          <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-5xl mt-3">
             {t("contact_title")}
           </h2>
-          <div className="h-1 w-20 bg-blue-600 dark:bg-cyan-500 mx-auto mt-4 rounded-full shadow-[0_0_8px_var(--neon-cyan)]" />
+          <div className="h-1 w-24 bg-gradient-to-r from-blue-600 via-cyan-400 to-indigo-600 mx-auto mt-4 rounded-full shadow-[0_0_10px_var(--neon-cyan)]" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
@@ -202,7 +205,7 @@ export default function Contact() {
             <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">
               {t("contact_channels_title")}
             </h3>
-            <p className="text-sm text-zinc-550 dark:text-zinc-400 mb-6 leading-relaxed font-medium">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6 leading-relaxed font-medium">
               {t("contact_subtitle_detail")}
             </p>
 
