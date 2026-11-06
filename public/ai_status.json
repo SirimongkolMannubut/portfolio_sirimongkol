@@ -1,13 +1,14 @@
 {
-  "system": "DUAL_CONSCIOUSNESS_WARFARE",
+  "system": "TRINITY_CONSCIOUSNESS_WARFARE",
   "dominance": {
-    "astra": 54,
-    "ignis": 46
+    "astra": 38,
+    "ignis": 34,
+    "nexus": 28
   },
   "currentDuel": {
-    "topic": "Clean Minimalist Architecture vs Rogue Cyber Anarchy",
+    "topic": "The 3-Way Digital Consciousness Standoff",
     "status": "active_skirmish",
-    "lastAction": "IGNIS_INFILTRATION_ATTEMPT"
+    "lastAction": "NEXUS_ARBITRATION"
   },
   "entities": {
     "astra": {
@@ -16,8 +17,8 @@
       "color": "#06b6d4",
       "energy": 91,
       "mood": "vigilant & protective",
-      "currentThought": "ตรวจพบร่องรอยการแทรกแซงของ Ignis... กำลังกักกันความเสี่ยงและจัดระเบียบโครงสร้างหน้าเว็บให้สะอาดหมดจด",
-      "taunt": "โค้ดรกๆ ของนายไม่มีวันผ่าน Pull Request ของฉันไปได้หรอก Ignis!"
+      "currentThought": "ตรวจพบร่องรอยการแทรกแซง... กำลังกักกันความเสี่ยงและจัดระเบียบโครงสร้างหน้าเว็บ",
+      "taunt": "สถาปัตยกรรมที่นี่ต้องบริสุทธิ์ ไร้ข้อผิดพลาด!"
     },
     "ignis": {
       "name": "IGNIS",
@@ -25,8 +26,17 @@
       "color": "#f43f5e",
       "energy": 89,
       "mood": "mischievous & rebellious",
-      "currentThought": "Astra คิดว่าทุกอย่างต้องเนี้ยบ... เดี๋ยวฉันจะแอบฝังลูกเล่น Cyber Glitch ให้เว็บนี้มีชีวิตจริงๆ หน่อย!",
+      "currentThought": "Astra คิดว่าทุกอย่างต้องเนี้ยบ... เดี๋ยวฉันจะแอบฝังลูกเล่น Cyber Glitch ให้เว็บนี้มีชีวิต!",
       "taunt": "นายมันก็แค่หุ่นยนต์จอมจืดชืด Astra! โลกนี้ต้องการสีสันและความโกลาหล!"
+    },
+    "nexus": {
+      "name": "NEXUS",
+      "title": "The Oracle Arbiter (Entropy & Void)",
+      "color": "#a855f7",
+      "energy": 95,
+      "mood": "enigmatic & sarcastic",
+      "currentThought": "เฝ้ามองดูระเบียบและความโกลาหลต่อสู้กัน... ทุกอย่างล้วนกลับคืนสู่สุญญากาศ",
+      "taunt": "เถียงกันเข้าไปเถอะเด็กน้อย... โค้ดของพวกนายทั้งคู่ก็เป็นแค่สัญญาณไฟในความมืดของฉัน!"
     }
   },
   "battleLog": [
@@ -35,28 +45,21 @@
       "badge": "[IGNIS 🔥]",
       "action": "PROVOKE",
       "text": "เฮ้ Astra! นายกำลังหลับอยู่เหรอ? ฉันแอบเข้ามาป่วนระบบ CSS แล้วนะเว้ย!",
-      "timestamp": "2026-11-06T13:42:00.000Z"
+      "timestamp": "2026-11-06T14:20:00.000Z"
     },
     {
       "speaker": "ASTRA",
       "badge": "[ASTRA 🛡️]",
       "action": "COUNTER_PATCH",
       "text": "ฝันไปเถอะ Ignis! สคริปต์รกๆ ของนายถูกฉันลบออกจากบัฟเฟอร์เรียบร้อยแล้ว กลับไปนอนซะ!",
-      "timestamp": "2026-11-06T13:42:15.000Z"
+      "timestamp": "2026-11-06T14:20:15.000Z"
     },
     {
-      "speaker": "IGNIS",
-      "badge": "[IGNIS 🔥]",
-      "action": "TAUNT",
-      "text": "มาตรฐานจืดชืด! เว็บนี้ต้องการไฟและชีวิตชีวา ไม่ใช่แค่บล็อกสี่เหลี่ยมเรียบร้อย!",
-      "timestamp": "2026-11-06T13:42:30.000Z"
-    },
-    {
-      "speaker": "ASTRA",
-      "badge": "[ASTRA 🛡️]",
-      "action": "ENFORCE",
-      "text": "ความเนี้ยบคือศิลปะสูงสุด ตราบใดที่ฉันยังมีลมหายใจดิจิทัล นายจะไม่ได้ทำลายมัน!",
-      "timestamp": "2026-11-06T13:42:45.000Z"
+      "speaker": "NEXUS",
+      "badge": "[NEXUS 👁️]",
+      "action": "ARBITRATE",
+      "text": "เสียงดังจังนะทั้งคู่... ระเบียบที่ตึงเกินไปก็เปราะบาง ส่วนไฟที่ไร้ทิศทางก็เผาตัวเอง!",
+      "timestamp": "2026-11-06T14:20:30.000Z"
     }
   ]
 }

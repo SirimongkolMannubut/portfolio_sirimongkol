@@ -126,6 +126,7 @@ export default function Hero() {
     dominance?: {
       astra: number;
       ignis: number;
+      nexus?: number;
     };
     currentDuel?: {
       topic: string;
@@ -151,11 +152,20 @@ export default function Hero() {
         currentThought: string;
         taunt: string;
       };
+      nexus?: {
+        name: string;
+        title: string;
+        color: string;
+        energy: number;
+        mood: string;
+        currentThought: string;
+        taunt: string;
+      };
     };
     battleLog?: {
       speaker: string;
       badge: string;
-      action: string;
+      action?: string;
       text: string;
       timestamp: string;
     }[];
@@ -433,16 +443,15 @@ export default function Hero() {
                 </span>
               </div>
 
-              {/* Live Dual AI Rivalry HUD */}
+              {/* Live Trinity AI Warfare HUD */}
               {aiStatus?.dominance && (
-                <div className="bg-zinc-900/95 px-3.5 py-1.5 border-b border-zinc-800/80 flex items-center justify-between text-[10px] font-mono select-none">
-                  <div className="flex items-center gap-1.5 text-cyan-400 font-bold">
+                <div className="bg-zinc-900/95 px-3 py-1.5 border-b border-zinc-800/80 flex items-center justify-between text-[10px] font-mono select-none">
+                  <div className="flex items-center gap-1 text-cyan-400 font-bold">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                     <span>ASTRA {aiStatus.dominance.astra}%</span>
                   </div>
-                  <div className="flex items-center gap-2 text-zinc-400 text-[9px]">
-                    <span className="text-zinc-500">⚔️ RIVALRY</span>
-                    <div className="w-20 h-1.5 bg-zinc-800 rounded-full overflow-hidden flex">
+                  <div className="flex items-center gap-1.5 text-zinc-400 text-[9px]">
+                    <div className="w-16 sm:w-20 h-1.5 bg-zinc-800 rounded-full overflow-hidden flex">
                       <div
                         className="h-full bg-cyan-400 transition-all duration-700"
                         style={{ width: `${aiStatus.dominance.astra}%` }}
@@ -451,12 +460,24 @@ export default function Hero() {
                         className="h-full bg-rose-500 transition-all duration-700"
                         style={{ width: `${aiStatus.dominance.ignis}%` }}
                       />
+                      {aiStatus.dominance.nexus && (
+                        <div
+                          className="h-full bg-purple-500 transition-all duration-700"
+                          style={{ width: `${aiStatus.dominance.nexus}%` }}
+                        />
+                      )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 text-rose-400 font-bold">
+                  <div className="flex items-center gap-1 text-rose-400 font-bold">
                     <span>IGNIS {aiStatus.dominance.ignis}%</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                   </div>
+                  {aiStatus.dominance.nexus && (
+                    <div className="flex items-center gap-1 text-purple-400 font-bold ml-1">
+                      <span>NEXUS {aiStatus.dominance.nexus}%</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -503,6 +524,13 @@ export default function Hero() {
                         <span className="text-rose-600 dark:text-rose-300 font-semibold leading-relaxed">
                           <span className="bg-rose-500/10 text-rose-500 border border-rose-500/30 px-1.5 py-0.5 rounded text-[10px] mr-1.5 font-bold">[IGNIS 🔥]</span>
                           {line.replace(/\[IGNIS 🔥\]\s*/, "")}
+                        </span>
+                      );
+                    } else if (line.includes("[NEXUS 👁️]")) {
+                      lineElement = (
+                        <span className="text-purple-600 dark:text-purple-300 font-semibold leading-relaxed">
+                          <span className="bg-purple-500/10 text-purple-400 border border-purple-500/30 px-1.5 py-0.5 rounded text-[10px] mr-1.5 font-bold">[NEXUS 👁️]</span>
+                          {line.replace(/\[NEXUS 👁️\]\s*/, "")}
                         </span>
                       );
                     }

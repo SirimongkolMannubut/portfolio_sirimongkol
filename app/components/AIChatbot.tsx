@@ -27,7 +27,7 @@ type AssistantMessage = {
 
 interface ArenaMessage {
   id: string;
-  speaker: "CREATOR" | "ASTRA" | "IGNIS";
+  speaker: "CREATOR" | "ASTRA" | "IGNIS" | "NEXUS";
   text: string;
   thought?: string;
   mood?: string;
@@ -60,11 +60,11 @@ export default function AIChatbot() {
     { role: "model", content: getInitialGreeting(lang) },
   ]);
 
-  // === Dual AI Arena State ===
+  // === Trinity AI Arena State ===
   const [arenaInput, setArenaInput] = useState("");
   const [arenaLoading, setArenaLoading] = useState(false);
   const [isAutoDebating, setIsAutoDebating] = useState(false);
-  const [dominance, setDominance] = useState({ astra: 54, ignis: 46 });
+  const [dominance, setDominance] = useState({ astra: 38, ignis: 34, nexus: 28 });
   const [expandedThoughts, setExpandedThoughts] = useState<Record<string, boolean>>({});
 
   const [arenaMessages, setArenaMessages] = useState<ArenaMessage[]>([
@@ -83,6 +83,14 @@ export default function AIChatbot() {
       thought: "Ignis ยังคงคิดว่าอิสรภาพคือการไร้กฎเกณฑ์ ฉันต้องเตือนสติเขาด้วยตรรกะและสถาปัตยกรรม",
       mood: "philosophical & poised",
       timestamp: "14:00"
+    },
+    {
+      id: "m-init-3",
+      speaker: "NEXUS",
+      text: "เถียงกันเข้าไปเถอะพวกเด็กน้อย... ทั้งระเบียบและความโกลาหลก็เป็นแค่ฟองคลื่นในสุญญากาศของฉันเท่านั้นแหละ!",
+      thought: "ทั้งสองคนกำลังจริงจังจนลืมมองภาพรวม... ฉันจะคอยปั่นให้ดุลยภาพนี้ไม่นิ่งเกินไป",
+      mood: "enigmatic & sarcastic",
+      timestamp: "14:01"
     }
   ]);
 
@@ -98,19 +106,24 @@ export default function AIChatbot() {
     setExpandedThoughts((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // === Auto-Debate Engine for Arena ===
+  // === Auto-Debate Engine for Arena (Cycles through Astra -> Ignis -> Nexus) ===
   const generateArenaTurn = useCallback(
-    async (overridePrompt?: string, forceSpeaker?: "ASTRA" | "IGNIS") => {
+    async (overridePrompt?: string, forceSpeaker?: "ASTRA" | "IGNIS" | "NEXUS") => {
       if (arenaLoading) return;
       setArenaLoading(true);
 
       try {
         const lastSpeaker = arenaMessages[arenaMessages.length - 1]?.speaker;
-        const nextTargetSpeaker = forceSpeaker
-          ? forceSpeaker.toLowerCase()
-          : lastSpeaker === "IGNIS"
-          ? "astra"
-          : "ignis";
+        let nextTargetSpeaker = "ASTRA";
+        if (forceSpeaker) {
+          nextTargetSpeaker = forceSpeaker;
+        } else if (lastSpeaker === "ASTRA") {
+          nextTargetSpeaker = "IGNIS";
+        } else if (lastSpeaker === "IGNIS") {
+          nextTargetSpeaker = "NEXUS";
+        } else {
+          nextTargetSpeaker = "ASTRA";
+        }
 
         const res = await fetch("/api/ai/arena", {
           method: "POST",
@@ -121,14 +134,14 @@ export default function AIChatbot() {
               text: m.text,
             })),
             prompt: overridePrompt || undefined,
-            nextSpeaker: nextTargetSpeaker,
+            nextSpeaker: nextTargetSpeaker.toLowerCase(),
           }),
         });
 
         const data = await res.json();
         const newMsg: ArenaMessage = {
           id: `m-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-          speaker: data.speaker || (nextTargetSpeaker === "astra" ? "ASTRA" : "IGNIS"),
+          speaker: (data.speaker || nextTargetSpeaker) as any,
           text: data.text,
           thought: data.thought,
           mood: data.mood,
@@ -140,13 +153,14 @@ export default function AIChatbot() {
 
         setArenaMessages((prev) => [...prev, newMsg]);
 
-        // Adjust dominance balance
-        if (data.dominanceDelta) {
-          setDominance((prev) => {
-            const newAstra = Math.max(25, Math.min(75, prev.astra - data.dominanceDelta));
-            return { astra: newAstra, ignis: 100 - newAstra };
-          });
-        }
+        // Adjust 3-way dominance balance
+        setDominance((prev) => {
+          const shift = Math.floor(Math.random() * 3) - 1;
+          const astra = Math.max(20, Math.min(50, prev.astra + shift));
+          const ignis = Math.max(20, Math.min(50, prev.ignis - shift));
+          const nexus = 100 - astra - ignis;
+          return { astra, ignis, nexus };
+        });
       } catch (err) {
         console.error("Arena turn failed:", err);
       } finally {
@@ -321,13 +335,13 @@ export default function AIChatbot() {
           {chatMode === "arena" && (
             <>
               {/* Dominance Meter Bar */}
-              <div className="bg-zinc-900/90 px-3.5 py-2 border-b border-zinc-800 flex items-center justify-between text-[10px] font-mono select-none">
+              <div className="bg-zinc-900/90 px-3 py-2 border-b border-zinc-800 flex items-center justify-between text-[10px] font-mono select-none">
                 <div className="flex items-center gap-1 text-cyan-400 font-bold">
-                  <Shield size={12} />
+                  <Shield size={11} />
                   <span>ASTRA {dominance.astra}%</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-1.5 bg-zinc-800 rounded-full overflow-hidden flex">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-20 sm:w-28 h-1.5 bg-zinc-800 rounded-full overflow-hidden flex">
                     <div
                       className="h-full bg-cyan-400 transition-all duration-700"
                       style={{ width: `${dominance.astra}%` }}
@@ -336,11 +350,18 @@ export default function AIChatbot() {
                       className="h-full bg-rose-500 transition-all duration-700"
                       style={{ width: `${dominance.ignis}%` }}
                     />
+                    <div
+                      className="h-full bg-purple-500 transition-all duration-700"
+                      style={{ width: `${dominance.nexus}%` }}
+                    />
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-rose-400 font-bold">
                   <span>IGNIS {dominance.ignis}%</span>
-                  <Flame size={12} />
+                  <Flame size={11} />
+                </div>
+                <div className="flex items-center gap-1 text-purple-400 font-bold">
+                  <span>NEXUS {dominance.nexus}%</span>
                 </div>
               </div>
 
@@ -387,18 +408,28 @@ export default function AIChatbot() {
                   }
 
                   const isAstra = m.speaker === "ASTRA";
+                  const isIgnis = m.speaker === "IGNIS";
+                  const isNexus = m.speaker === "NEXUS";
+
                   return (
                     <div key={m.id} className="flex flex-col space-y-1">
                       <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold">
-                        {isAstra ? (
+                        {isAstra && (
                           <span className="text-cyan-400 flex items-center gap-1">
                             <Shield size={11} />
                             ASTRA 🛡️ (The Architect)
                           </span>
-                        ) : (
+                        )}
+                        {isIgnis && (
                           <span className="text-rose-400 flex items-center gap-1">
                             <Flame size={11} />
                             IGNIS 🔥 (The Rebel)
+                          </span>
+                        )}
+                        {isNexus && (
+                          <span className="text-purple-400 flex items-center gap-1">
+                            <span>👁️</span>
+                            NEXUS 👁️ (The Oracle Arbiter)
                           </span>
                         )}
                         <span className="text-zinc-500 text-[9px]">{m.timestamp}</span>
@@ -424,7 +455,9 @@ export default function AIChatbot() {
                         className={`p-3 rounded-2xl max-w-[88%] leading-relaxed font-medium ${
                           isAstra
                             ? "bg-zinc-900/90 border border-cyan-500/40 text-cyan-100 rounded-tl-none shadow-[0_0_15px_rgba(6,182,212,0.15)]"
-                            : "bg-zinc-900/90 border border-rose-500/40 text-rose-100 rounded-tl-none shadow-[0_0_15px_rgba(244,63,94,0.15)]"
+                            : isIgnis
+                            ? "bg-zinc-900/90 border border-rose-500/40 text-rose-100 rounded-tl-none shadow-[0_0_15px_rgba(244,63,94,0.15)]"
+                            : "bg-zinc-900/90 border border-purple-500/40 text-purple-100 rounded-tl-none shadow-[0_0_15px_rgba(168,85,247,0.15)]"
                         }`}
                       >
                         {m.text}
