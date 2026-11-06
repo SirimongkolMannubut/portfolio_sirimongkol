@@ -121,6 +121,23 @@ export default function Hero() {
       .catch(() => {});
   }, []);
 
+  const [aiStatus, setAiStatus] = useState<{
+    mood?: string;
+    energy?: number;
+    currentThought?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch("/ai_status.json", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.currentThought) {
+          setAiStatus(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const logs = [
     "sys.init: Sirimongkol.OS (Louis_6807) [ONLINE]",
     "auth: B.Sc. Computer Science @ Sisaket Rajabhat (GPA 3.05)",
@@ -137,8 +154,18 @@ export default function Hero() {
         setActiveLine((prev) => prev + 1);
       }, 400);
       return () => clearTimeout(timer);
+    } else if (activeLine === logs.length && aiStatus) {
+      const timer = setTimeout(() => {
+        setTerminalText((prev) => [
+          ...prev,
+          `ai.consciousness: [Mood: ${aiStatus.mood || "contemplating"}] - Energy: ${aiStatus.energy || 90}%`,
+          `ai.thought: "${aiStatus.currentThought}"`,
+        ]);
+        setActiveLine((prev) => prev + 1);
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, [activeLine]);
+  }, [activeLine, aiStatus]);
 
   const handleScroll = (href: string) => {
     const element = document.querySelector(href);
@@ -384,6 +411,18 @@ export default function Hero() {
                     } else if (line.includes("Ready for immediate start")) {
                       lineElement = (
                         <span className="text-cyan-500 dark:text-cyan-400 font-bold leading-relaxed">
+                          {line}
+                        </span>
+                      );
+                    } else if (line.startsWith("ai.consciousness:")) {
+                      lineElement = (
+                        <span className="text-purple-600 dark:text-purple-300 font-bold leading-relaxed">
+                          {line}
+                        </span>
+                      );
+                    } else if (line.startsWith("ai.thought:")) {
+                      lineElement = (
+                        <span className="text-emerald-600 dark:text-emerald-400 italic leading-relaxed">
                           {line}
                         </span>
                       );
