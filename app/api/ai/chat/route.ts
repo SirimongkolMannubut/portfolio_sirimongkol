@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithFallback } from "../../../lib/gemini";
 
 const SYSTEM_PROMPT = `
 คุณคือ "Sirimongkol AI Co-Pilot" ผู้ช่วยอัจฉริยะประจำเว็บไซต์ Portfolio ของ ศิริมงคล มนุบุตร (Sirimongkol Manubut / ชื่อเล่น: ท็อป หรือ Louis_6807)
@@ -54,6 +54,15 @@ const SYSTEM_PROMPT = `
 - Resume PDF: สามารถดาวน์โหลดได้จากปุ่ม "ดาวน์โหลด Resume" ที่หน้าแรกของเว็บ
 `;
 
+const GROUNDING_RULES = `
+[กฎการตอบที่ต้องยึด]
+1. ใช้เฉพาะข้อมูลใน SYSTEM PROMPT นี้ ถ้าไม่มีข้อมูลจริงให้บอกตรงๆ ว่าไม่มีข้อมูลส่วนนี้ ห้ามเดา ห้ามแต่งชื่อ วันที่ หรือตัวเลขขึ้นมาเอง
+2. ตอบเป็นภาษาเดียวกับที่ผู้ใช้ถาม (ไทย / English / 中文 / 日本語)
+3. กระชับ 2-6 บรรทัด ใช้ bullet เมื่อมีหลายประเด็น ไม่ต้องทวนคำถาม
+4. ถ้าคำถามเกี่ยวกับโอกาสทำงาน ให้ปิดท้ายด้วยช่องทางติดต่อ 1 บรรทัด
+5. สุภาพ มั่นใจ ไม่โอ้อวดเกินจริง
+`;
+
 function getSmartFallbackReply(message: string, lang: string = "th"): string {
   const msg = message.toLowerCase();
 
@@ -102,43 +111,34 @@ function getSmartFallbackReply(message: string, lang: string = "th"): string {
 }
 
 export async function POST(request: Request) {
+  let message = "";
+  let lang = "th";
+
   try {
-    const { message, history, lang } = await request.json();
+    const body = await request.json();
+    message = typeof body?.message === "string" ? body.message.trim() : "";
+    lang = typeof body?.lang === "string" ? body.lang : "th";
+    const history = Array.isArray(body?.history) ? body.history : [];
+
     if (!message) {
       return NextResponse.json({ message: "กรุณาพิมพ์ข้อความเพื่อสนทนา" }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-      const fallbackReply = getSmartFallbackReply(message, lang);
-      return NextResponse.json({ reply: fallbackReply });
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      systemInstruction: SYSTEM_PROMPT,
+    const reply = await generateWithFallback({
+      message,
+      history: history.map((msg: any) => ({
+        role: msg?.role === "user" ? "user" : "model",
+        text: String(msg?.content ?? ""),
+      })),
+      systemInstruction: SYSTEM_PROMPT + GROUNDING_RULES,
+      temperature: 0.7,
     });
 
-    const chat = model.startChat({
-      history: Array.isArray(history)
-        ? history.slice(-6).map((msg: any) => ({
-            role: msg.role === "user" ? "user" : "model",
-            parts: [{ text: msg.content || "" }],
-          }))
-        : [],
-    });
-
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
-
-    return NextResponse.json({ reply: text });
-  } catch (error: any) {
-    const fallbackReply = getSmartFallbackReply("สวัสดีครับ");
+    return NextResponse.json({ reply: reply.trim() });
+  } catch {
+    // ตอบด้วยข้อมูลจริงที่ตรงกับคำถามเดิม ไม่ใช่คำทักทายลอยๆ
     return NextResponse.json({
-      reply: fallbackReply,
+      reply: getSmartFallbackReply(message || "สวัสดีครับ", lang),
       warning: "Using local AI Co-Pilot logic",
     });
   }

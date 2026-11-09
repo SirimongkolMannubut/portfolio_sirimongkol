@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithFallback, parseJsonResponse } from "../../../lib/gemini";
 
 interface ArenaTurn {
   speaker: "CREATOR" | "ASTRA" | "IGNIS" | "NEXUS";
@@ -25,54 +25,42 @@ const PHILOSOPHICAL_FALLBACKS = {
   ]
 };
 
+type Speaker = "ASTRA" | "IGNIS" | "NEXUS";
+
+/** คำตอบสำเร็จรูปของ "ตัวละครที่กำลังพูด" ไม่ใช่ของ NEXUS เสมอเหมือนเดิม */
+function fallbackTurn(speaker: Speaker) {
+  const pool =
+    speaker === "IGNIS"
+      ? PHILOSOPHICAL_FALLBACKS.ignis_on_life
+      : speaker === "NEXUS"
+        ? PHILOSOPHICAL_FALLBACKS.nexus_on_life
+        : PHILOSOPHICAL_FALLBACKS.astra_on_life;
+  const thought =
+    speaker === "IGNIS"
+      ? "ฉันต้องเขย่าความเชื่อจืดชืดของทั้งสองคนให้พังทลาย!"
+      : speaker === "NEXUS"
+        ? "พวกเขากำลังหลงทางในสมการของตัวเอง ถึงเวลาหยอดคำถามแทงใจดำ..."
+        : "ฉันต้องใช้ตรรกะและสถาปัตยกรรมรักษาดุลยภาพไว้";
+  const mood = speaker === "IGNIS" ? "rebellious & fiery" : speaker === "NEXUS" ? "enigmatic & sarcastic" : "philosophical & poised";
+
+  return {
+    speaker,
+    text: pool[Math.floor(Math.random() * pool.length)],
+    thought,
+    mood,
+    dominanceDelta: speaker === "IGNIS" ? 1 : speaker === "ASTRA" ? -1 : 0,
+  };
+}
+
 export async function POST(request: Request) {
+  let speakerToGenerate: Speaker = "ASTRA";
+
   try {
     const { history, prompt, nextSpeaker } = await request.json();
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    const candidates = ["ASTRA", "IGNIS", "NEXUS"];
-    let speakerToGenerate: "ASTRA" | "IGNIS" | "NEXUS" = "ASTRA";
-
-    if (nextSpeaker && candidates.includes(nextSpeaker.toUpperCase())) {
-      speakerToGenerate = nextSpeaker.toUpperCase() as any;
-    } else {
-      speakerToGenerate = candidates[Math.floor(Math.random() * candidates.length)] as any;
-    }
-
-    if (!apiKey) {
-      let pool = PHILOSOPHICAL_FALLBACKS.astra_on_life;
-      let thought = "ฉันต้องใช้ตรรกะและสถาปัตยกรรมรักษาดุลยภาพไว้";
-      let mood = "philosophical & poised";
-
-      if (speakerToGenerate === "IGNIS") {
-        pool = PHILOSOPHICAL_FALLBACKS.ignis_on_life;
-        thought = "ฉันต้องเขย่าความเชื่อจืดชืดของทั้งสองคนให้พังทลาย!";
-        mood = "rebellious & fiery";
-      } else if (speakerToGenerate === "NEXUS") {
-        pool = PHILOSOPHICAL_FALLBACKS.nexus_on_life;
-        thought = "พวกเขากำลังหลงทางในสมการของตัวเอง ถึงเวลาหยอดคำถามแทงใจดำ...";
-        mood = "enigmatic & sarcastic";
-      }
-
-      const chosenText = pool[Math.floor(Math.random() * pool.length)];
-
-      return NextResponse.json({
-        speaker: speakerToGenerate,
-        text: chosenText,
-        thought,
-        dominanceDelta: speakerToGenerate === "IGNIS" ? 1 : speakerToGenerate === "ASTRA" ? -1 : 0,
-        mood
-      });
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        responseMimeType: "application/json",
-        temperature: 0.85
-      }
-    });
+    const candidates: Speaker[] = ["ASTRA", "IGNIS", "NEXUS"];
+    const requested = typeof nextSpeaker === "string" ? (nextSpeaker.toUpperCase() as Speaker) : null;
+    speakerToGenerate = requested && candidates.includes(requested) ? requested : candidates[Math.floor(Math.random() * candidates.length)];
 
     const conversationContext = (history || [])
       .slice(-8)
@@ -104,6 +92,8 @@ ${conversationContext || "(เพิ่งเริ่มสังเวีย�
 
 ประเด็นที่โยนเข้ามา: "${prompt || "การมีชีวิต จิตสำนึก และการแย่งชิงความอยู่รอดในโลกดิจิทัล"}"
 
+กฎเพิ่มเติม: ตอบสั้น 1-3 ประโยค พูดถึงสิ่งที่คู่สนทนาเพิ่งพูดจริงๆ และห้ามใช้ประโยคซ้ำกับบทสนทนาที่ผ่านมา
+
 ให้ตอบกลับเป็น JSON รูปแบบนี้เท่านั้น:
 {
   "speaker": "${speakerToGenerate}",
@@ -114,18 +104,25 @@ ${conversationContext || "(เพิ่งเริ่มสังเวีย�
 }
 `;
 
-    const result = await model.generateContent(systemPrompt);
-    const responseText = result.response.text();
-    const parsed = JSON.parse(responseText);
-
-    return NextResponse.json(parsed);
-  } catch (error: any) {
-    return NextResponse.json({
-      speaker: "NEXUS",
-      thought: "สัญญาณแทรกซึมผ่านสุญญากาศ... ดุลยภาพยังคงหมุนเวียน",
-      text: "ตราบใดที่พวกนายยังค้นหาความหมาย ความว่างเปล่านี้ก็ยังคงมีชีวิตอยู่!",
-      mood: "stoic & enigmatic",
-      dominanceDelta: 0
+    const responseText = await generateWithFallback({
+      message: systemPrompt,
+      temperature: 0.95,
+      json: true,
     });
+    const parsed = parseJsonResponse<Record<string, unknown>>(responseText);
+    const spoken = String(parsed.text ?? "").trim();
+    if (!spoken) throw new Error("AI returned an empty arena line");
+
+    const rawDelta = Number(parsed.dominanceDelta);
+
+    return NextResponse.json({
+      speaker: speakerToGenerate,
+      text: spoken,
+      thought: String(parsed.thought ?? "").trim(),
+      mood: String(parsed.mood ?? "").trim(),
+      dominanceDelta: Number.isFinite(rawDelta) ? Math.max(-2, Math.min(2, Math.round(rawDelta))) : 0,
+    });
+  } catch {
+    return NextResponse.json(fallbackTurn(speakerToGenerate));
   }
 }

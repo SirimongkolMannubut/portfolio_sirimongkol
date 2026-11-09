@@ -129,7 +129,7 @@ export default function AIChatbot() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            history: arenaMessages.slice(-6).map((m) => ({
+            history: arenaMessages.slice(-10).map((m) => ({
               speaker: m.speaker,
               text: m.text,
             })),
@@ -153,13 +153,24 @@ export default function AIChatbot() {
 
         setArenaMessages((prev) => [...prev, newMsg]);
 
-        // Adjust 3-way dominance balance
+        // ดุลยภาพขยับตาม dominanceDelta ที่ AI ตัดสินเอง ไม่ใช่สุ่มแบบไม่มีความหมาย
         setDominance((prev) => {
-          const shift = Math.floor(Math.random() * 3) - 1;
-          const astra = Math.max(20, Math.min(50, prev.astra + shift));
-          const ignis = Math.max(20, Math.min(50, prev.ignis - shift));
-          const nexus = 100 - astra - ignis;
-          return { astra, ignis, nexus };
+          const speakerKey = String(data.speaker || nextTargetSpeaker).toLowerCase();
+          if (!["astra", "ignis", "nexus"].includes(speakerKey)) return prev;
+
+          const raw = Number(data.dominanceDelta);
+          const delta = Number.isFinite(raw) ? Math.max(-2, Math.min(2, raw)) : 0;
+          if (!delta) return prev;
+
+          const base: Record<string, number> = { astra: prev.astra, ignis: prev.ignis, nexus: prev.nexus };
+          const others = ["astra", "ignis", "nexus"].filter((k) => k !== speakerKey);
+          const target = Math.max(20, Math.min(50, base[speakerKey] + delta));
+          const rest = 100 - target;
+          const pool = base[others[0]] + base[others[1]] || 1;
+          const first = Math.round(rest * (base[others[0]] / pool));
+
+          const next = { ...base, [speakerKey]: target, [others[0]]: first, [others[1]]: rest - first };
+          return { astra: next.astra, ignis: next.ignis, nexus: next.nexus };
         });
       } catch (err) {
         console.error("Arena turn failed:", err);
